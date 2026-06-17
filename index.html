@@ -11,7 +11,7 @@
     <!-- Chart.js for Admin Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
@@ -74,9 +74,10 @@
             </div>
             
             <div class="flex items-center space-x-3 mt-2 md:mt-0">
-                <span class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
-                    Local LAN Sync: Aktif
+                <!-- Live Database Status Badge -->
+                <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
+                    Mode: Offline/LAN
                 </span>
                 <button onclick="goToView('launcher')" id="back-to-launcher-btn" class="hidden text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold py-1.5 px-3 rounded transition-all duration-200">
                     <i class="fa-solid fa-chevron-left mr-1"></i> Ganti Tampilan
@@ -90,10 +91,30 @@
 
         <!-- 1. LAUNCHER SCREEN -->
         <div id="view-launcher" class="container mx-auto px-4 py-8 max-w-6xl flex-grow flex flex-col justify-center">
-            <div class="text-center mb-10">
-                <span class="text-amber-600 font-bold tracking-widest text-xs uppercase px-3 py-1 bg-amber-100 rounded-full border border-amber-200">SISTEM ANTRIAN CLIENT-SERVER</span>
+            <div class="text-center mb-6">
+                <span class="text-amber-600 font-bold tracking-widest text-xs uppercase px-3 py-1 bg-amber-100 rounded-full border border-amber-200">SISTEM ANTRIAN CLIENT-SERVER VIA GITHUB</span>
                 <h2 class="text-3xl md:text-4xl font-extrabold text-slate-950 mt-3 tracking-tight">Pusat Kendali Jaringan Antrian</h2>
-                <p class="text-slate-600 mt-2 max-w-xl mx-auto text-sm md:text-base">Silakan pilih jenis tampilan layar untuk perangkat ini. Buka di tab atau jendela baru untuk mensimulasikan banyak perangkat dalam satu LAN lokal.</p>
+                <p class="text-slate-600 mt-2 max-w-xl mx-auto text-sm md:text-base">Silakan pilih jenis tampilan layar untuk perangkat ini. Atur koneksi Google Sheets di bawah agar sinkron otomatis lintas perangkat.</p>
+            </div>
+
+            <!-- Google Sheets Configuration Card -->
+            <div class="bg-gradient-to-r from-emerald-900 to-teal-950 rounded-3xl p-6 shadow-xl text-white mb-8 border border-emerald-800">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="max-w-xl">
+                        <span class="bg-emerald-500/20 text-emerald-300 text-[10px] font-black uppercase px-2.5 py-1 rounded-full border border-emerald-500/30 tracking-widest"><i class="fa-solid fa-database mr-1"></i> Sinkronisasi Google Sheets</span>
+                        <h3 class="text-xl font-bold mt-2 text-white">Hubungkan ke Google Spreadsheet</h3>
+                        <p class="text-xs text-emerald-200/80 mt-1 leading-relaxed">Masukkan URL Web App dari Apps Script spreadsheet Anda. Ini akan membuat semua perangkat (Kiosk, Loket, TV) saling tersinkronisasi otomatis via internet secara gratis!</p>
+                    </div>
+                    <div class="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="bg-slate-900/60 border border-emerald-700 rounded-xl px-4 py-2 text-xs w-full sm:w-80 text-emerald-100 placeholder-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-400">
+                        <button onclick="saveSheetsConnection()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2 px-5 rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-md">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Hubungkan
+                        </button>
+                    </div>
+                </div>
+                <div id="sheets-status-text" class="text-xs mt-3 text-emerald-300/90 font-medium flex items-center gap-2">
+                    <!-- Dynamic state will be injected here -->
+                </div>
             </div>
 
             <!-- Grid of Clients -->
@@ -109,9 +130,6 @@
                     </div>
                     <div class="mt-6 space-y-2">
                         <button onclick="goToView('kiosk')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
-                        <button onclick="openInNewTab('kiosk')" class="w-full bg-slate-100 text-slate-700 font-medium py-2 px-4 rounded-xl hover:bg-slate-200 transition-all text-xs flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka di Tab Baru (LAN)
-                        </button>
                     </div>
                 </div>
 
@@ -126,9 +144,6 @@
                     </div>
                     <div class="mt-6 space-y-2">
                         <button onclick="goToView('operator')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
-                        <button onclick="openInNewTab('operator')" class="w-full bg-slate-100 text-slate-700 font-medium py-2 px-4 rounded-xl hover:bg-slate-200 transition-all text-xs flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka di Tab Baru (LAN)
-                        </button>
                     </div>
                 </div>
 
@@ -143,9 +158,6 @@
                     </div>
                     <div class="mt-6 space-y-2">
                         <button onclick="goToView('tv')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
-                        <button onclick="openInNewTab('tv')" class="w-full bg-slate-100 text-slate-700 font-medium py-2 px-4 rounded-xl hover:bg-slate-200 transition-all text-xs flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka di Tab Baru (LAN)
-                        </button>
                     </div>
                 </div>
 
@@ -160,19 +172,7 @@
                     </div>
                     <div class="mt-6 space-y-2">
                         <button onclick="goToView('admin')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
-                        <button onclick="openInNewTab('admin')" class="w-full bg-slate-100 text-slate-700 font-medium py-2 px-4 rounded-xl hover:bg-slate-200 transition-all text-xs flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka di Tab Baru (LAN)
-                        </button>
                     </div>
-                </div>
-            </div>
-
-            <!-- Deployment Tip -->
-            <div class="mt-12 bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-start gap-4">
-                <i class="fa-solid fa-circle-info text-blue-500 text-xl mt-0.5"></i>
-                <div class="text-sm text-slate-700 leading-relaxed">
-                    <strong class="text-blue-900 block mb-1">💡 Tips Simulasi Client-Server:</strong>
-                    Anda bisa membuka aplikasi ini di komputer yang sama dalam tab terpisah. Buka satu tab untuk <strong>TV Display</strong>, satu tab untuk <strong>Kios Antrian</strong>, dan satu tab untuk <strong>Layar Operator</strong>. Klik tombol panggil pada Operator, maka TV Display di tab sebelah akan otomatis merespons secara instan dan mengeluarkan suara chime serta panggilan audio TTS!
                 </div>
             </div>
         </div>
@@ -260,7 +260,7 @@
 
             <!-- Footer Kiosk -->
             <div class="py-4 text-center text-slate-500 border-t border-slate-900 text-xs">
-                © 2026 Disdikpora Kabupaten Cianjur • Dioptimalkan untuk XPrinter & Epson Thermal Printer
+                © 2026 Disdikpora Kabupaten Cianjur • Sinkronisasi Google Sheets Aktif
             </div>
         </div>
 
@@ -269,7 +269,7 @@
             <!-- TV Header -->
             <div class="bg-slate-900 border-b-2 border-amber-500 px-6 py-4 flex justify-between items-center shadow-2xl">
                 <div class="flex items-center space-x-4">
-                    <!-- Cianjur Simil-crest -->
+                    <!-- Cianjur Crest -->
                     <svg class="w-16 h-16 text-yellow-400 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
                         <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="#0f172a" stroke="currentColor" stroke-width="4"/>
                         <circle cx="50" cy="50" r="18" fill="#eab308"/>
@@ -280,7 +280,7 @@
                         <p class="text-xs md:text-sm font-bold tracking-widest text-emerald-400 uppercase mt-1">Kabupaten Cianjur</p>
                     </div>
                 </div>
-                <!-- TTS Control Box & Realtime Watch -->
+                <!-- TV Audio Control -->
                 <div class="flex items-center gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 flex items-center gap-3">
                         <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
@@ -295,12 +295,10 @@
 
             <!-- TV Main Content Body -->
             <div class="flex-grow grid grid-cols-12 gap-6 p-6">
-                <!-- Left Column: Big Current Called Queue -->
+                <!-- Left Column -->
                 <div class="col-span-12 lg:col-span-7 flex flex-col gap-6">
                     <div id="tv-calling-card" class="flex-grow bg-slate-900/80 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-all duration-300">
                         <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/5 to-transparent pointer-events-none"></div>
-                        
-                        <!-- Pulse Ring Animation when calling -->
                         <div id="tv-pulse-glow" class="hidden absolute inset-0 bg-amber-500/10 animate-pulse border-4 border-amber-400 rounded-3xl"></div>
 
                         <div class="text-center relative z-10">
@@ -325,7 +323,7 @@
                     </div>
                 </div>
 
-                <!-- Right Column: Status Grid of all 6 Counters -->
+                <!-- Right Column -->
                 <div class="col-span-12 lg:col-span-5 flex flex-col gap-4 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl shadow-xl">
                     <h3 class="text-md font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-list-ol text-amber-500"></i> STATUS LOKET PELAYANAN
@@ -383,7 +381,7 @@
                 </div>
             </div>
 
-            <!-- TV Running Text / Marquee -->
+            <!-- TV Running Text -->
             <div class="bg-amber-500 text-slate-950 font-bold py-3 text-sm overflow-hidden flex items-center border-t border-amber-600 shadow-xl">
                 <div class="whitespace-nowrap flex animate-[marquee_25s_linear_infinite] gap-10">
                     <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Utamakan Kesopanan, Pelayanan Prima, Efisien, dan Transparan demi Pendidikan Cianjur Lebih Baik.</span>
@@ -433,7 +431,7 @@
                 </div>
             </div>
 
-            <!-- Operator Interactive Panel (Hidden until login) -->
+            <!-- Operator Interactive Panel -->
             <div id="operator-active-panel" class="hidden grid grid-cols-12 gap-6">
                 <!-- Status Row -->
                 <div class="col-span-12 bg-slate-900 text-white rounded-3xl p-6 flex flex-wrap justify-between items-center shadow-xl">
@@ -491,16 +489,15 @@
                     </div>
                 </div>
 
-                <!-- Right sidebar: stats counters specific -->
+                <!-- Right sidebar -->
                 <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
-                    <!-- Specific waiting log -->
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg flex-grow flex flex-col">
                         <h3 class="text-xs font-extrabold text-slate-500 tracking-wider uppercase mb-4 flex items-center justify-between border-b pb-3">
                             <span>SISA ANTRIAN BIDANG</span>
                             <span id="op-waiting-count" class="bg-rose-100 text-rose-600 font-black text-xs px-2.5 py-0.5 rounded-full">0</span>
                         </h3>
                         <div id="op-waiting-list" class="flex-grow space-y-2 overflow-y-auto max-h-[300px]">
-                            <!-- List elements go here dynamically -->
+                            <!-- Filled dynamically -->
                         </div>
                     </div>
                 </div>
@@ -566,14 +563,12 @@
 
                 <!-- Graphs & Breakdown Grid -->
                 <div class="grid grid-cols-12 gap-6">
-                    <!-- Left: Analytics Charts -->
                     <div class="col-span-12 lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-100 shadow-lg">
                         <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Volume Layanan Berdasarkan Bidang</h3>
                         <div class="h-[280px]">
                             <canvas id="admin-chart-canvas"></canvas>
                         </div>
                     </div>
-                    <!-- Right: Breakdown Counters and Controls -->
                     <div class="col-span-12 lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-lg flex flex-col justify-between">
                         <div>
                             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Detail Per-Bidang</h3>
@@ -610,7 +605,7 @@
                             <button onclick="confirmReset()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-xs transition duration-200 border border-rose-200">
                                 <i class="fa-solid fa-trash-can mr-1"></i> Reset Seluruh Antrian Hari Ini
                             </button>
-                            <p class="text-[10px] text-center text-slate-400 mt-2">Menyetel ulang counter dari awal (P001, dll) tanpa menghapus arsip.</p>
+                            <p class="text-[10px] text-center text-slate-400 mt-2">Menyetel ulang counter dari awal (P000, dll) tanpa menghapus arsip.</p>
                         </div>
                     </div>
                 </div>
@@ -646,7 +641,7 @@
                                 </tr>
                             </thead>
                             <tbody id="admin-table-body" class="text-xs divide-y divide-slate-100">
-                                <!-- Tr templates filled dynamically -->
+                                <!-- Filled dynamically -->
                             </tbody>
                         </table>
                     </div>
@@ -656,7 +651,7 @@
 
     </main>
 
-    <!-- FLOATING PRINTER PREVIEW MODAL (Simulates EPSON/Xprinter thermal slip) -->
+    <!-- FLOATING PRINTER PREVIEW MODAL -->
     <div id="thermal-printer-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 flex flex-col justify-between">
             <h4 class="text-xs font-bold text-slate-600 uppercase tracking-widest text-center mb-4">Mencetak Tiket Antrian...</h4>
@@ -673,7 +668,7 @@
                 </div>
                 <div class="text-center my-4 border-y border-dashed border-slate-200 py-3">
                     <span class="block text-[8px] text-slate-500 uppercase tracking-wide">Nomor Antrian</span>
-                    <span id="ticket-number-out" class="block text-3xl font-black text-slate-950 mt-1">P001</span>
+                    <span id="ticket-number-out" class="block text-3xl font-black text-slate-950 mt-1">P000</span>
                 </div>
                 <div class="space-y-1 text-[8px] border-b border-dashed border-slate-300 pb-3 mb-3">
                     <div class="flex justify-between">
@@ -693,7 +688,7 @@
             <!-- Modal Action Buttons -->
             <div class="grid grid-cols-2 gap-3 mt-6">
                 <button onclick="document.getElementById('thermal-printer-modal').classList.add('hidden')" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold py-2 px-4 rounded-xl text-xs transition">Tutup</button>
-                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+                <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-50 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
                     <i class="fa-solid fa-print"></i> Cetak Sekarang
                 </button>
             </div>
@@ -705,7 +700,7 @@
         <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-200.wav" type="audio/wav">
     </audio>
 
-    <!-- CUSTOM DIALOG DIALOGS MODAL -->
+    <!-- CUSTOM ALERT DIALOG MODAL -->
     <div id="custom-alert-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
             <h3 id="alert-title" class="text-md font-bold text-slate-900 uppercase tracking-wider mb-2">Pemberitahuan</h3>
@@ -754,48 +749,96 @@
             'SEKRETARIAT': { prefix: 'T', loket: 6, name: 'Sekretariat' }
         };
 
-        // Initialize SQLite/LocalStorage database
-        function initDatabase() {
-            const savedState = localStorage.getItem('disdikpora_db');
-            const todayStr = getTodayString();
+        let sheetsUrl = "";
+        let isSheetsMode = false;
 
-            if (savedState) {
-                state = JSON.parse(savedState);
-                // Auto Reset Check at midnight / new day
-                if (state.lastResetDate !== todayStr) {
-                    resetDailyCounters();
-                }
+        // Initialize SQLite/LocalStorage database
+        async function initDatabase() {
+            // Load Google Sheets Connection
+            sheetsUrl = localStorage.getItem('disdikpora_sheets_url') || "";
+            isSheetsMode = sheetsUrl !== "";
+
+            updateSyncStatusUI();
+
+            if (isSheetsMode) {
+                await fetchFromSheets();
             } else {
-                // Seed mock database to make admin dashboard looks outstanding
-                seedDatabase();
+                const savedState = localStorage.getItem('disdikpora_db');
+                const todayStr = getTodayString();
+
+                if (savedState) {
+                    state = JSON.parse(savedState);
+                    if (state.lastResetDate !== todayStr) {
+                        resetDailyCounters();
+                    }
+                } else {
+                    seedDatabase();
+                }
             }
-            saveStateToStorage();
+            saveStateToStorage(false); // Do not push back during initialization
+
+            // Poll Google Sheets Web App for changes (Keep devices in sync in real-time)
+            if (isSheetsMode) {
+                setInterval(fetchFromSheets, 4000); // Poll every 4 seconds
+            }
+        }
+
+        // FETCH DATA FROM GOOGLE SHEETS
+        async function fetchFromSheets() {
+            if (!isSheetsMode || !sheetsUrl) return;
+            try {
+                const response = await fetch(`${sheetsUrl}?action=getState`);
+                const data = await response.json();
+                if (data && data.queues) {
+                    const oldActiveCalls = { ...state.activeCalls };
+                    state = data;
+                    localStorage.setItem('disdikpora_db', JSON.stringify(state));
+
+                    // Real-time voice triggering if TV display is active
+                    if (state.currentView === 'tv') {
+                        for (let i = 1; i <= 6; i++) {
+                            if (state.activeCalls[i] && state.activeCalls[i] !== oldActiveCalls[i]) {
+                                const q = state.queues.find(queue => queue.code_antrian === state.activeCalls[i]);
+                                if (q && q.status === 'DIPANGGIL') {
+                                    triggerVoiceCall(state.activeCalls[i], i, BIDANG_MAPPING[q.bidang].name);
+                                }
+                            }
+                        }
+                    }
+
+                    // Dynamically refresh current view with latest cloud data
+                    if (state.currentView === 'tv') renderTVDisplay();
+                    if (state.currentView === 'operator') renderOperatorConsole();
+                    if (state.currentView === 'admin') updateDashboardUI();
+                }
+            } catch (e) {
+                console.error("Gagal sinkronisasi Google Sheets:", e);
+            }
         }
 
         function seedDatabase() {
             const today = getTodayString();
             state.lastResetDate = today;
             state.dailyCounter = { P: 5, S: 10, M: 8, G: 12, O: 4, T: 6 };
-            state.activeCalls = { 1: "P005", 2: "S008", 3: "M007", 4: "G010", 5: "O003", 6: "T005" };
+            state.activeCalls = { 1: "P004", 2: "S009", 3: "M007", 4: "G011", 5: "O003", 6: "T005" };
             
-            // Generate elegant logs
             const fields = ['PAUDDIKMAS', 'SD', 'SMP', 'GTK', 'PORA', 'SEKRETARIAT'];
             const prefixes = { 'PAUDDIKMAS': 'P', 'SD': 'S', 'SMP': 'M', 'GTK': 'G', 'PORA': 'O', 'SEKRETARIAT': 'T' };
 
             for (let f of fields) {
                 const count = state.dailyCounter[prefixes[f]];
                 const loketId = BIDANG_MAPPING[f].loket;
-                for (let i = 1; i <= count; i++) {
+                for (let i = 0; i < count; i++) {
                     const ticketCode = `${prefixes[f]}${String(i).padStart(3, '0')}`;
                     let status = 'SELESAI';
                     if (ticketCode === state.activeCalls[loketId]) {
                         status = 'DIPANGGIL';
-                    } else if (i === count) {
-                        status = 'MENUNGGU'; // Last one is waiting
+                    } else if (i === count - 1) {
+                        status = 'MENUNGGU';
                     }
 
                     state.queues.push({
-                        id: Date.now() - (1000 * 60 * 60 * i),
+                        id: Date.now() - (1000 * 60 * 60 * (count - i)),
                         code_antrian: ticketCode,
                         bidang: f,
                         loket: loketId,
@@ -812,7 +855,6 @@
         function resetDailyCounters() {
             state.dailyCounter = { P: 0, S: 0, M: 0, G: 0, O: 0, T: 0 };
             state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
-            // Mark older logs as archive, keep them in table logs
             state.queues.forEach(q => {
                 if (q.status === 'MENUNGGU' || q.status === 'DIPANGGIL' || q.status === 'DILAYANI') {
                     q.status = 'DILEWATI';
@@ -822,23 +864,75 @@
             saveStateToStorage();
         }
 
-        function saveStateToStorage() {
+        async function saveStateToStorage(pushToSheets = true) {
             localStorage.setItem('disdikpora_db', JSON.stringify(state));
-            // Realtime Sync to all other open tabs (Kiosks, Operator, TV Display)
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
             updateDashboardUI();
+
+            // Push State update to Google Sheets Web App
+            if (isSheetsMode && sheetsUrl && pushToSheets) {
+                try {
+                    await fetch(sheetsUrl, {
+                        method: 'POST',
+                        mode: 'no-cors', // Avoids CORS browser blocking policies dynamically
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'saveState', state: state })
+                    });
+                } catch (e) {
+                    console.error("Gagal mengirim data ke Google Sheets:", e);
+                }
+            }
+        }
+
+        // SAVE CONNECTION CONFIGURATION
+        function saveSheetsConnection() {
+            const inputVal = document.getElementById('sheets-url-input').value.trim();
+            if (inputVal === "") {
+                localStorage.removeItem('disdikpora_sheets_url');
+                showAlert('Konfigurasi Disimpan', 'Mode Google Sheets dinonaktifkan. Aplikasi kembali ke mode Offline/LAN Lokal.');
+            } else {
+                localStorage.setItem('disdikpora_sheets_url', inputVal);
+                showAlert('Konfigurasi Disimpan', 'Mode Google Sheets diaktifkan! Aplikasi akan mensinkronisasikan seluruh data ke Spreadsheet Anda secara real-time.');
+            }
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        }
+
+        function updateSyncStatusUI() {
+            const badge = document.getElementById('sync-status-badge');
+            const statusText = document.getElementById('sheets-status-text');
+            const inputField = document.getElementById('sheets-url-input');
+
+            if (inputField) inputField.value = sheetsUrl;
+
+            if (isSheetsMode) {
+                if (badge) {
+                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> Mode: Google Sheets`;
+                    badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5";
+                }
+                if (statusText) {
+                    statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> Status: Terkoneksi ke Cloud Spreadsheet Anda`;
+                }
+            } else {
+                if (badge) {
+                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Offline/LAN`;
+                    badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
+                }
+                if (statusText) {
+                    statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> Status: Hanya berjalan pada server lokal / tab ini saja`;
+                }
+            }
         }
 
         // Broadcaster listener
         channel.onmessage = function(event) {
             if (event.data && event.data.type === 'STATE_UPDATED') {
                 state = event.data.state;
-                // React to state update based on current view
                 updateDashboardUI();
                 renderOperatorConsole();
                 renderTVDisplay();
             } else if (event.data && event.data.type === 'CALL_TICKET_ANNOUNCEMENT') {
-                // If we are on TV display, trigger voice
                 if (state.currentView === 'tv') {
                     triggerVoiceCall(event.data.ticket, event.data.loket, event.data.bidang);
                 }
@@ -862,10 +956,10 @@
                 document.getElementById('back-to-launcher-btn').classList.add('hidden');
             } else if (viewId === 'kiosk') {
                 document.getElementById('view-kiosk').classList.remove('hidden');
-                document.getElementById('global-header').classList.add('hidden'); // Kiosk is standalone
+                document.getElementById('global-header').classList.add('hidden');
             } else if (viewId === 'tv') {
                 document.getElementById('view-tv').classList.remove('hidden');
-                document.getElementById('global-header').classList.add('hidden'); // TV Screen is fullscreen
+                document.getElementById('global-header').classList.add('hidden');
                 renderTVDisplay();
             } else if (viewId === 'operator') {
                 document.getElementById('view-operator').classList.remove('hidden');
@@ -886,9 +980,8 @@
             const config = BIDANG_MAPPING[bidangName];
             if (!config) return;
 
-            // Increment count
-            state.dailyCounter[config.prefix]++;
             const nextNum = state.dailyCounter[config.prefix];
+            state.dailyCounter[config.prefix]++;
             const formattedNum = `${config.prefix}${String(nextNum).padStart(3, '0')}`;
 
             const now = new Date();
@@ -910,21 +1003,15 @@
             state.queues.push(newQueue);
             saveStateToStorage();
 
-            // Populate virtual printer modal
             document.getElementById('ticket-field-out').innerText = config.name;
             document.getElementById('ticket-number-out').innerText = formattedNum;
             document.getElementById('ticket-date-out').innerText = dateStr;
             document.getElementById('ticket-time-out').innerText = timeStr;
 
-            // Open virtual printer print layout simulator
             document.getElementById('thermal-printer-modal').classList.remove('hidden');
-
-            // Optional: Auto Print trigger (bypasses browser dialog limitations elegantly via standard setup)
-            // Uncomment the line below to immediately trigger hardware epson/xprinter if default browser handles it
-            // window.print();
         }
 
-        // OPERATOR LOGET CONSOLE LOGIC
+        // OPERATOR LOKET CONSOLE LOGIC
         function renderOperatorConsole() {
             if (!state.operatorSession) {
                 document.getElementById('operator-login-panel').classList.remove('hidden');
@@ -939,11 +1026,9 @@
             const bidangName = getBidangByLoket(loketId);
             const mapping = BIDANG_MAPPING[bidangName];
 
-            // Set Title & Loket Context info
             document.getElementById('op-title').innerText = `LOKET ${loketId}`;
             document.getElementById('op-sub').innerText = `Petugas Pelayanan Bidang ${mapping.name}`;
 
-            // Fetch currently serving queue
             const activeCallNum = state.activeCalls[loketId];
             const activeRecord = activeCallNum ? state.queues.find(q => q.code_antrian === activeCallNum) : null;
 
@@ -961,7 +1046,6 @@
                 document.getElementById('op-current-time').innerText = `Jam Ambil: --`;
             }
 
-            // Waiting tickets list specific to this loket
             const waitingList = state.queues.filter(q => q.bidang === bidangName && q.status === 'MENUNGGU')
                 .sort((a,b) => a.id - b.id);
             
@@ -1027,13 +1111,11 @@
             const nowTimeStr = now.toLocaleTimeString('id-ID');
 
             if (actionType === 'NEXT') {
-                // Check if current active ticket is still in progress and not done
                 if (activeRecord && (activeRecord.status === 'DIPANGGIL' || activeRecord.status === 'DILAYANI')) {
                     showAlert('Peringatan', 'Selesaikan atau lewati dulu antrian saat ini sebelum memanggil antrian berikutnya.');
                     return;
                 }
 
-                // Fetch next waiting ticket for this counter's specific field
                 const nextQueue = state.queues
                     .filter(q => q.bidang === bidangName && q.status === 'MENUNGGU')
                     .sort((a,b) => a.id - b.id)[0];
@@ -1051,7 +1133,6 @@
                 saveStateToStorage();
                 renderOperatorConsole();
 
-                // Fire LAN broadcast audio announcement event
                 channel.postMessage({
                     type: 'CALL_TICKET_ANNOUNCEMENT',
                     ticket: nextQueue.code_antrian,
@@ -1101,7 +1182,6 @@
 
         // TV QUEUE MONITOR SCREEN DISPLAY
         function renderTVDisplay() {
-            // Clock real-time tick in TV
             setInterval(() => {
                 const now = new Date();
                 const clockEl = document.getElementById('tv-digital-clock');
@@ -1117,13 +1197,11 @@
                 }
             }, 1000);
 
-            // Fetch the overall latest called ticket to display as main calling highlight
             const calledTickets = state.queues.filter(q => q.status === 'DIPANGGIL').sort((a,b) => {
-                // Parse time or use id timestamp
                 return b.id - a.id;
             });
 
-            const mainCall = calledTickets[0]; // Fetch newest called ticket
+            const mainCall = calledTickets[0];
 
             if (mainCall) {
                 const mapping = BIDANG_MAPPING[mainCall.bidang];
@@ -1138,7 +1216,6 @@
                 document.getElementById('tv-active-destination').innerText = `Silakan menunggu antrian dipanggil`;
             }
 
-            // Sync grid list of 6 loket boxes
             for (let i = 1; i <= 6; i++) {
                 const activeVal = state.activeCalls[i];
                 const boxEl = document.getElementById(`tv-loket-box-${i}`);
@@ -1154,74 +1231,47 @@
             }
         }
 
-        // AUDIO SPEECH GENERATION (TEXT TO SPEECH INDONESIA)
+        // AUDIO SPEECH GENERATION
         function triggerVoiceCall(ticketCode, loketNumber, bidangName) {
-            // Trigger visual glow ring in TV panel
             const ring = document.getElementById('tv-pulse-glow');
             if (ring) {
                 ring.classList.remove('hidden');
-                setTimeout(() => ring.classList.add('hidden'), 12000); // Glow during vocal session duration
+                setTimeout(() => ring.classList.add('hidden'), 12000);
             }
 
-            // Play standard lobby chime first
             const chime = document.getElementById('audio-chime');
             if (chime) {
                 chime.currentTime = 0;
                 chime.play().then(() => {
-                    // Delay speech announcement until chime completes
                     setTimeout(() => {
                         speakIndonesianQueue(ticketCode, loketNumber, bidangName);
                     }, 1200);
                 }).catch(err => {
-                    // Fallback to direct speech if chime block by browser autoplay rules
                     speakIndonesianQueue(ticketCode, loketNumber, bidangName);
                 });
             }
         }
 
         function speakIndonesianQueue(ticketCode, loketNumber, bidangName) {
-            if (!('speechSynthesis' in window)) {
-                console.log("Speech synthesis not supported.");
-                return;
-            }
+            if (!('speechSynthesis' in window)) return;
 
-            // Spell the ticket code letter phonetic and digits individually for local clarity
             const letter = ticketCode.charAt(0);
             const digits = ticketCode.substring(1).split('');
 
             const letterSpelling = {
-                'P': 'pe',
-                'S': 'es',
-                'M': 'em',
-                'G': 'ge',
-                'O': 'o',
-                'T': 'te'
+                'P': 'pe', 'S': 'es', 'M': 'em', 'G': 'ge', 'O': 'o', 'T': 'te'
             };
 
             const digitSpelling = {
-                '0': 'nol',
-                '1': 'satu',
-                '2': 'dua',
-                '3': 'tiga',
-                '4': 'empat',
-                '5': 'lima',
-                '6': 'enam',
-                '7': 'tujuh',
-                '8': 'delapan',
-                '9': 'sembilan'
+                '0': 'nol', '1': 'satu', '2': 'dua', '3': 'tiga', '4': 'empat',
+                '5': 'lima', '6': 'enam', '7': 'tujuh', '8': 'delapan', '9': 'sembilan'
             };
 
             const speltLetter = letterSpelling[letter] || letter;
             const speltDigits = digits.map(d => digitSpelling[d] || d).join(' ');
 
-            // Spell counter numbers
             const counterWords = {
-                1: 'satu',
-                2: 'dua',
-                3: 'tiga',
-                4: 'empat',
-                5: 'lima',
-                6: 'enam'
+                1: 'satu', 2: 'dua', 3: 'tiga', 4: 'empat', 5: 'lima', 6: 'enam'
             };
             const speltLoket = counterWords[loketNumber] || loketNumber;
 
@@ -1229,10 +1279,9 @@
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'id-ID';
-            utterance.rate = 0.85; // Slightly slower for crisp clear resonance
+            utterance.rate = 0.85;
             utterance.pitch = 1.0;
 
-            // Pick Indonesian vocal voice if explicitly matching system packages
             const voices = window.speechSynthesis.getVoices();
             const indonesianVoice = voices.find(v => v.lang.startsWith('id') || v.name.includes('Indonesian'));
             if (indonesianVoice) {
@@ -1271,11 +1320,9 @@
         function updateDashboardUI() {
             if (state.currentView !== 'admin') return;
 
-            // Filter today queues
             const todayStr = getTodayString();
             const todayQueues = state.queues.filter(q => q.tanggal === todayStr);
 
-            // Compute main numbers
             const total = todayQueues.length;
             const waiting = todayQueues.filter(q => q.status === 'MENUNGGU').length;
             const serving = todayQueues.filter(q => q.status === 'DIPANGGIL' || q.status === 'DILAYANI').length;
@@ -1286,7 +1333,6 @@
             document.getElementById('stat-serving').innerText = serving;
             document.getElementById('stat-completed').innerText = completed;
 
-            // Details per bidang statistics
             const pCount = todayQueues.filter(q => q.bidang === 'PAUDDIKMAS').length;
             const sCount = todayQueues.filter(q => q.bidang === 'SD').length;
             const mCount = todayQueues.filter(q => q.bidang === 'SMP').length;
@@ -1301,11 +1347,9 @@
             document.getElementById('stat-o').innerText = oCount;
             document.getElementById('stat-t').innerText = tCount;
 
-            // Table Logs Populate
             const tableBody = document.getElementById('admin-table-body');
             tableBody.innerHTML = '';
             
-            // Sort newest first
             const sortedQueues = [...state.queues].sort((a,b) => b.id - a.id);
             if (sortedQueues.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400 font-medium">Belum ada aktivitas pelayanan terekam hari ini.</td></tr>`;
@@ -1334,7 +1378,6 @@
                 });
             }
 
-            // Chart Rendering
             renderChart(pCount, sCount, mCount, gCount, oCount, tCount);
         }
 
@@ -1342,9 +1385,7 @@
             const ctx = document.getElementById('admin-chart-canvas');
             if (!ctx) return;
 
-            if (adminChart) {
-                adminChart.destroy();
-            }
+            if (adminChart) adminChart.destroy();
 
             adminChart = new Chart(ctx, {
                 type: 'bar',
@@ -1354,20 +1395,14 @@
                         label: 'Total Kunjungan Layanan',
                         data: [p, s, m, g, o, t],
                         backgroundColor: [
-                            'rgba(59, 130, 246, 0.75)',  // Blue
-                            'rgba(16, 185, 129, 0.75)',  // Emerald
-                            'rgba(139, 92, 246, 0.75)',  // Purple
-                            'rgba(245, 158, 11, 0.75)',  // Amber
-                            'rgba(6, 182, 212, 0.75)',   // Cyan
-                            'rgba(244, 63, 94, 0.75)'    // Rose
+                            'rgba(59, 130, 246, 0.75)', 'rgba(16, 185, 129, 0.75)',
+                            'rgba(139, 92, 246, 0.75)', 'rgba(245, 158, 11, 0.75)',
+                            'rgba(6, 182, 212, 0.75)', 'rgba(244, 63, 94, 0.75)'
                         ],
                         borderColor: [
-                            'rgb(59, 130, 246)',
-                            'rgb(16, 185, 129)',
-                            'rgb(139, 92, 246)',
-                            'rgb(245, 158, 11)',
-                            'rgb(6, 182, 212)',
-                            'rgb(244, 63, 94)'
+                            'rgb(59, 130, 246)', 'rgb(16, 185, 129)',
+                            'rgb(139, 92, 246)', 'rgb(245, 158, 11)',
+                            'rgb(6, 182, 212)', 'rgb(244, 63, 94)'
                         ],
                         borderWidth: 1.5,
                         borderRadius: 8
@@ -1376,29 +1411,20 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#f1f5f9' },
-                            ticks: { stepSize: 1, color: '#94a3b8' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#64748b', font: { weight: 'bold' } }
-                        }
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1, color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: 'bold' } } }
                     }
                 }
             });
         }
 
         function confirmReset() {
-            if (confirm('Apakah Anda yakin ingin menyetel ulang counter antrian hari ini? Tindakan ini akan mengembalikan urutan ke nomor 001 untuk semua bidang.')) {
+            if (confirm('Apakah Anda yakin ingin menyetel ulang counter antrian hari ini? Tindakan ini akan mengembalikan urutan ke nomor 000 untuk semua bidang.')) {
                 resetDailyCounters();
                 updateDashboardUI();
-                showAlert('Reset Berhasil', 'Seluruh counter antrian berhasil disetel ulang ke nomor 001.');
+                showAlert('Reset Berhasil', 'Seluruh counter antrian berhasil disetel ulang ke nomor 000.');
             }
         }
 
@@ -1421,7 +1447,7 @@
         }
 
         function exportToPDF() {
-            window.print(); // Print layout has styling to hide other layouts and print clean sheets
+            window.print();
         }
 
         // UTILITY FUNCTIONS
@@ -1447,7 +1473,6 @@
             modal.classList.remove('hidden');
         }
 
-        // INITIAL CHECK FOR DIRECT VIEW INJECT (Tab Launch LAN Simulator Helper)
         window.onload = function() {
             initDatabase();
 
