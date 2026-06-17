@@ -264,7 +264,7 @@
                 <div class="flex items-center gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 flex items-center gap-3">
                         <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
-                        <span class="text-xs font-bold text-slate-300">Audio Broadcast: Aktif</span>
+                        <span class="text-xs font-bold text-slate-300">Audio Broadcast: Primar</span>
                     </div>
                     <div class="text-right">
                         <p id="tv-digital-clock" class="text-3xl font-black font-mono tracking-wider text-amber-400">00:00:00</p>
@@ -699,7 +699,7 @@
         // Gantilah teks di bawah dengan Web App URL Google Apps Script Anda.
         // Setelah Anda commit perubahan file index.html ke GitHub, semua perangkat
         // yang membuka link Anda akan otomatis tersambung tanpa perlu input manual!
-        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyAk9Kdo3lbDxnygZ4-HtTl-uIbpygqQfUHD99WwvC2btJkovQpO7AzM-7KMthChLwH/exec";
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwgashDR7yOQbgrM3Iqw9BtCehnetxArrIlEnlgRcGN-jbzI5n-RcTkLUM5WLdq0495/exec";
         // =========================================================================
 
         // CLIENT SERVER LAN BROADCAST CHANNEL
@@ -912,17 +912,20 @@
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
             updateDashboardUI();
 
-            // PUSH DATA KE GOOGLE SPREADSHEET (Bypass preflight CORS via 'no-cors' agar request 302 redirect tidak ditolak browser!)
+            // PUSH DATA KE GOOGLE SPREADSHEET (Mengirimkan payload utuh dengan bypass CORS tanpa parameter no-cors)
             if (isSheetsMode && sheetsUrl && pushToSheets) {
                 try {
-                    await fetch(sheetsUrl, {
+                    const response = await fetch(sheetsUrl, {
                         method: 'POST',
-                        mode: 'no-cors',
                         headers: {
                             'Content-Type': 'text/plain'
                         },
                         body: JSON.stringify({ action: 'saveState', state: state })
                     });
+                    
+                    if (!response.ok) {
+                        console.error("Respon pengiriman data ke Sheets gagal:", response.status);
+                    }
                 } catch (e) {
                     console.error("Gagal mengirim data ke Google Sheets:", e);
                 }
