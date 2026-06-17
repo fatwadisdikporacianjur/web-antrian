@@ -77,7 +77,7 @@
                 <!-- Live Database Status Badge -->
                 <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
                     <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
-                    Mode: Offline/LAN
+                    Mengecek koneksi...
                 </span>
                 <button onclick="goToView('launcher')" id="back-to-launcher-btn" class="hidden text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold py-1.5 px-3 rounded transition-all duration-200">
                     <i class="fa-solid fa-chevron-left mr-1"></i> Ganti Tampilan
@@ -699,7 +699,7 @@
         // Gantilah teks di bawah dengan Web App URL Google Apps Script Anda.
         // Setelah Anda commit perubahan file index.html ke GitHub, semua perangkat
         // yang membuka link Anda akan otomatis tersambung tanpa perlu input manual!
-        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxXK50GDrJvPNjBsuzRWK2mk_2Uju-Ehalhi8EpEsorSvj5H7sQ-w3zce5eBZZWKNHY/exec";
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyd_kVPFeQZ2woj3XNYJqUGJYJ_jSMjqaQNC8MeevMTT-l-0vnoEWmgKA2x-ek5Qp2P/exec";
         // =========================================================================
 
         // CLIENT SERVER LAN BROADCAST CHANNEL
@@ -745,7 +745,7 @@
         // Initialize database
         async function initDatabase() {
             // Priority 1: Check if there's a hardcoded URL inside the SPREADSHEET_WEBAPP_URL variable
-            if (SPREADSHEET_WEBAPP_URL && SPREADSHEET_WEBAPP_URL !== "https://script.google.com/macros/s/AKfycbxXK50GDrJvPNjBsuzRWK2mk_2Uju-Ehalhi8EpEsorSvj5H7sQ-w3zce5eBZZWKNHY/exec" && SPREADSHEET_WEBAPP_URL.trim() !== "") {
+            if (SPREADSHEET_WEBAPP_URL && SPREADSHEET_WEBAPP_URL !== "MASUKKAN_URL_WEB_APP_ANDA_DI_SINI" && SPREADSHEET_WEBAPP_URL.trim() !== "") {
                 sheetsUrl = SPREADSHEET_WEBAPP_URL.trim();
                 isSheetsMode = true;
                 isUsingHardcodedUrl = true;
@@ -759,6 +759,12 @@
             updateSyncStatusUI();
 
             if (isSheetsMode) {
+                // Set initial status to "Connecting"
+                const badge = document.getElementById('sync-status-badge');
+                if (badge) {
+                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-bounce"></span> Menghubungkan Cloud...`;
+                    badge.className = "text-xs bg-yellow-950 px-3 py-1.5 rounded-full text-yellow-300 font-semibold border border-yellow-800 flex items-center gap-1.5";
+                }
                 await fetchFromSheets();
             } else {
                 const savedState = localStorage.getItem('disdikpora_db');
@@ -785,7 +791,13 @@
         async function fetchFromSheets() {
             if (!isSheetsMode || !sheetsUrl) return;
             try {
-                const response = await fetch(`${sheetsUrl}?action=getState`);
+                const response = await fetch(`${sheetsUrl}?action=getState`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+                
+                if (!response.ok) throw new Error("Respons HTTP gagal: " + response.status);
+                
                 const data = await response.json();
                 if (data && data.queues) {
                     const oldActiveCalls = { ...state.activeCalls };
@@ -804,6 +816,9 @@
                         }
                     }
 
+                    // Hubungkan Berhasil (Set UI Hijau)
+                    setDatabaseConnectedStatus(true);
+
                     // Dynamically refresh current active view
                     if (state.currentView === 'tv') renderTVDisplay();
                     if (state.currentView === 'operator') renderOperatorConsole();
@@ -811,6 +826,36 @@
                 }
             } catch (e) {
                 console.error("Gagal sinkronisasi Google Sheets:", e);
+                // Hubungkan Gagal (Set UI Merah Kedip)
+                setDatabaseConnectedStatus(false, e.message);
+            }
+        }
+
+        // SET REALTIME CONNECTION BADGE LOOK
+        function setDatabaseConnectedStatus(success, errorMessage = "") {
+            const badge = document.getElementById('sync-status-badge');
+            if (!badge) return;
+
+            if (success) {
+                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> Mode: Google Sheets (Cloud)`;
+                badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5";
+                badge.onclick = null;
+                badge.title = "Koneksi Cloud ke Google Sheets aktif dan sinkron.";
+            } else {
+                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span> KONEKSI ERROR!`;
+                badge.className = "text-xs bg-rose-950 px-3 py-1.5 rounded-full text-rose-300 font-bold border border-rose-800 flex items-center gap-1.5 cursor-pointer animate-pulse";
+                badge.title = "Gagal terhubung ke Google Sheets. Klik untuk detail bantuan.";
+                badge.onclick = function() {
+                    showAlert(
+                        "Integrasi Cloud Terganggu", 
+                        "Aplikasi tidak dapat menjangkau server Google Sheets Anda.\n\n" +
+                        "LANGKAH PERBAIKAN:\n" +
+                        "1. Periksa apakah SPREADSHEET_WEBAPP_URL di baris 462 sudah Anda ganti dengan URL Web App Apps Script Anda.\n" +
+                        "2. Pastikan Google Apps Script Anda sudah di-deploy dengan pengaturan Execute As: 'Me' (Saya) dan Who Has Access: 'Anyone' (Semua Orang/Anonymous).\n" +
+                        "3. Jika baru mengubah kode Apps Script, Anda wajib men-deploy ulang dengan versi baru (New Deployment).\n\n" +
+                        "Detail Teknis: " + errorMessage
+                    );
+                };
             }
         }
 
@@ -867,11 +912,12 @@
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
             updateDashboardUI();
 
-            // PUSH DATA KE GOOGLE SPREADSHEET (Bypass preflight CORS via text/plain & hilangkan no-cors agar pengalihan redirect berhasil dengan payload utuh!)
+            // PUSH DATA KE GOOGLE SPREADSHEET (Bypass preflight CORS via 'no-cors' agar request 302 redirect tidak ditolak browser!)
             if (isSheetsMode && sheetsUrl && pushToSheets) {
                 try {
                     await fetch(sheetsUrl, {
                         method: 'POST',
+                        mode: 'no-cors',
                         headers: {
                             'Content-Type': 'text/plain'
                         },
@@ -900,30 +946,13 @@
 
         function updateSyncStatusUI() {
             const badge = document.getElementById('sync-status-badge');
-            const statusText = document.getElementById('sheets-status-text');
-            const inputField = document.getElementById('sheets-url-input');
-
-            if (inputField) inputField.value = isUsingHardcodedUrl ? "" : sheetsUrl;
-
             if (isSheetsMode) {
-                if (badge) {
-                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> Mode: Google Sheets (Cloud)`;
-                    badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5";
-                }
-                if (statusText) {
-                    if (isUsingHardcodedUrl) {
-                        statusText.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span> Status: <span class="text-white font-bold bg-emerald-800 px-2 py-0.5 rounded text-[10px]">OTOMATIS (Bawaan Kode)</span> Terkoneksi untuk semua perangkat!`;
-                    } else {
-                        statusText.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-pulse"></span> Status: <span class="text-white font-bold bg-blue-800 px-2 py-0.5 rounded text-[10px]">MANUAL OVERRIDE</span> Tersambung di perangkat ini saja.`;
-                    }
-                }
+                // Diperbarui secara dinamis oleh fetchFromSheets()
             } else {
                 if (badge) {
                     badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Offline/LAN`;
                     badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
-                }
-                if (statusText) {
-                    statusText.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span> Status: Belum Terkoneksi Cloud. Semua perangkat terisolasi dalam server lokal saja.`;
+                    badge.onclick = null;
                 }
             }
         }
@@ -1281,6 +1310,7 @@
             const textToSpeak = `Nomor antrian, ${speltLetter} ${speltDigits}, silakan menuju loket ${speltLoket}, bidang ${bidangName}.`;
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
+            textToSpeak.toLowerCase();
             utterance.lang = 'id-ID';
             utterance.rate = 0.85;
             utterance.pitch = 1.0;
