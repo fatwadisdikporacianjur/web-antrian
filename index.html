@@ -76,7 +76,7 @@
             <div class="flex items-center space-x-3 mt-2 md:mt-0">
                 <!-- Live Database Status Badge -->
                 <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
+                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce"></span>
                     Mengecek koneksi...
                 </span>
                 <button onclick="goToView('launcher')" id="back-to-launcher-btn" class="hidden text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold py-1.5 px-3 rounded transition-all duration-200">
@@ -264,7 +264,7 @@
                 <div class="flex items-center gap-6">
                     <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 flex items-center gap-3">
                         <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
-                        <span class="text-xs font-bold text-slate-300">Audio Broadcast: Primar</span>
+                        <span class="text-xs font-bold text-slate-300">Audio Broadcast: Aktif</span>
                     </div>
                     <div class="text-right">
                         <p id="tv-digital-clock" class="text-3xl font-black font-mono tracking-wider text-amber-400">00:00:00</p>
@@ -699,7 +699,7 @@
         // Gantilah teks di bawah dengan Web App URL Google Apps Script Anda.
         // Setelah Anda commit perubahan file index.html ke GitHub, semua perangkat
         // yang membuka link Anda akan otomatis tersambung tanpa perlu input manual!
-        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyDnbtrw_GA-r0vAUyCjN1odIA7BAvtiagOutM_U9Cs6ywwtvdi9rA9Dw7UEsjGC2Zt/exec";
+        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxxNOeQLkVyY2aSgFsDnMCSpYj5Jiik65yuCDFwS8TEvRjGNUxOSqz-yl6Q2Dpz18mY/exec";
         // =========================================================================
 
         // CLIENT SERVER LAN BROADCAST CHANNEL
@@ -791,10 +791,8 @@
         async function fetchFromSheets() {
             if (!isSheetsMode || !sheetsUrl) return;
             try {
-                const response = await fetch(`${sheetsUrl}?action=getState`, {
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json' }
-                });
+                // PENGGUNAAN FETCH MURNI TANPA CUSTOM HEADER (Mencegah Preflight & Blokir CORS)
+                const response = await fetch(`${sheetsUrl}?action=getState`);
                 
                 if (!response.ok) throw new Error("Respons HTTP gagal: " + response.status);
                 
@@ -912,20 +910,17 @@
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
             updateDashboardUI();
 
-            // PUSH DATA KE GOOGLE SPREADSHEET (Mengirimkan payload utuh dengan bypass CORS tanpa parameter no-cors)
+            // PUSH DATA KE SPREADSHEET MENGGUNAKAN SKEMA "FAIL-SAFE NO-CORS"
             if (isSheetsMode && sheetsUrl && pushToSheets) {
                 try {
-                    const response = await fetch(sheetsUrl, {
+                    await fetch(sheetsUrl, {
                         method: 'POST',
+                        mode: 'no-cors', // Menghindari Preflight OPTIONS Check secara mutlak
                         headers: {
-                            'Content-Type': 'text/plain'
+                            'Content-Type': 'text/plain;charset=utf-8'
                         },
                         body: JSON.stringify({ action: 'saveState', state: state })
                     });
-                    
-                    if (!response.ok) {
-                        console.error("Respon pengiriman data ke Sheets gagal:", response.status);
-                    }
                 } catch (e) {
                     console.error("Gagal mengirim data ke Google Sheets:", e);
                 }
