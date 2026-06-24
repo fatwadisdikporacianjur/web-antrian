@@ -60,7 +60,7 @@
             
             <div class="flex items-center space-x-3 mt-2 md:mt-0">
                 <!-- Status Badge -->
-                <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
+                <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5 cursor-pointer hover:bg-slate-750 transition-all">
                     <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
                     Mengecek koneksi...
                 </span>
@@ -529,9 +529,9 @@
             'SEKRETARIAT': { prefix: 'T', loket: 6, name: 'Sekretariat' }
         };
 
-        const SPREADSHEET_WEBAPP_URL_KEY = 'disdikpora_sheets_url';
-        let sheetsUrl = "https://script.google.com/macros/s/AKfycbxRpFA1B7OtBPDpmacsgWdwYCNAwr1shHAPjCPguX6WZIOHFeh_H8V3mu72ALWRp8AjWQ/exec";
-        let isSheetsMode = true;
+        // KONFIGURASI URL CLOUD STATIS PERMANEN
+        const sheetsUrl = "https://script.google.com/macros/s/AKfycbxRpFA1B7OtBPDpmacsgWdwYCNAwr1shHAPjCPguX6WZIOHFeh_H8V3mu72ALWRp8AjWQ/exec";
+        const isSheetsMode = true;
         let lastAnnouncedTickets = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
 
         // DETEKSI APAKAH APLIKASI BERJALAN DI SANDBOX PREVIEW CHAT / IFRAME BLOB
@@ -542,29 +542,10 @@
                    window.self !== window.top;
         }
 
-        // INITIALIZE DATABASE
+        // INITIALIZE DATABASE (Tanpa menggunakan localStorage)
         async function initDatabase() {
-            // Periksa simpanan URL manual di penyimpanan lokal
-            const savedUrl = localStorage.getItem(SPREADSHEET_WEBAPP_URL_KEY);
-            if (savedUrl && savedUrl.trim() !== "") {
-                sheetsUrl = savedUrl.trim();
-            }
-            
-            // Periksa apakah URL valid untuk integrasi cloud
-            isSheetsMode = sheetsUrl !== "" && sheetsUrl !== "MASUKKAN_URL_WEB_APP_ANDA_DI_SINI";
-
-            // Muat database lokal terlebih dahulu sebagai cadangan dasar agar performa instan tanpa lag
-            const savedState = localStorage.getItem('disdikpora_db');
             const todayStr = getTodayString();
-
-            if (savedState) {
-                state = JSON.parse(savedState);
-                if (state.lastResetDate !== todayStr) {
-                    resetDailyCounters();
-                }
-            } else {
-                state.lastResetDate = todayStr;
-            }
+            state.lastResetDate = todayStr;
 
             updateSyncStatusUI();
 
@@ -596,7 +577,6 @@
 
                 if (data && data.queues) {
                     state = data;
-                    localStorage.setItem('disdikpora_db', JSON.stringify(state));
 
                     // Jika mode TV aktif, deteksi panggilan baru untuk memicu suara otomatis
                     if (state.currentView === 'tv') {
@@ -616,19 +596,18 @@
                     refreshActiveViewUI();
                 }
             } catch (e) {
-                // Jangan banjiri konsol dengan kesalahan Failed to Fetch jika dijalankan di sandbox pratinjau chat
+                // Tampilkan pesan error murni di konsol
                 if (!isSandbox) {
                     console.error("Gagal sinkronisasi dari Google Sheets:", e);
                 } else {
-                    console.warn("Koneksi cloud tertunda di lingkungan Sandbox. Aplikasi berjalan lancar dalam Mode Lokal Offline.");
+                    console.warn("Koneksi cloud dibatasi di lingkungan Sandbox.");
                 }
                 setDatabaseConnectedStatus(false, e.toString());
             }
         }
 
-        // KIRIM DATA KE GOOGLE SHEETS CLOUD (POST)
+        // KIRIM DATA KE GOOGLE SHEETS CLOUD (POST) - Tanpa menyimpan ke localStorage
         async function saveStateToStorage(pushToSheets = true) {
-            localStorage.setItem('disdikpora_db', JSON.stringify(state));
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
 
             // Kirim paket JSON murni menggunakan mode 'no-cors' agar diizinkan langsung oleh peramban
@@ -651,43 +630,29 @@
             }
         }
 
-        // PENYETELAN BADGE STATUS KONEKSI
+        // PENYETELAN BADGE STATUS KONEKSI (Murni mencerminkan status Google Sheets Cloud)
         function setDatabaseConnectedStatus(success, errDetail = "") {
             const badge = document.getElementById('sync-status-badge');
             if (!badge) return;
 
             if (success) {
                 badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> Mode: Google Sheets (Cloud)`;
-                badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5";
-                badge.onclick = null;
+                badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5 cursor-pointer hover:bg-emerald-900 transition-all";
+                badge.onclick = function() {
+                    showAlert(
+                        "Koneksi Cloud Aktif!",
+                        "Aplikasi Anda berhasil tersambung langsung secara real-time ke database Google Sheets Anda!\n\n" +
+                        "Semua pendaftaran antrean dan pemanggilan loket disinkronkan secara global ke lembar kerja awan Anda."
+                    );
+                };
             } else {
-                // Deteksi otomatis jika dijalankan di dalam sandbox pratinjau chat
-                const isSandbox = checkIsSandbox();
-                
-                if (isSandbox) {
-                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-amber-500 rounded-full animate-pulse"></span> Mode: Pratinjau Obrolan (Lokal)`;
-                    badge.className = "text-xs bg-amber-950 px-3 py-1.5 rounded-full text-amber-300 font-semibold border border-amber-800 flex items-center gap-1.5 cursor-pointer";
-                    badge.onclick = function() {
-                        showAlert(
-                            "Fitur Keamanan Pratinjau Chat",
-                            "Browser mendeteksi aplikasi dijalankan di dalam frame pratinjau chat (sandbox), sehingga memblokir pengalihan koneksi cloud Google Sheets demi keamanan data.\n\n" +
-                            "Tenang saja, sistem beralih otomatis ke Mode Lokal agar Anda tetap bisa menguji coba cetak/panggil antrian secara normal di pratinjau ini.\n\n" +
-                            "KONEKSI CLOUD AKAN AKTIF 100% OTOMATIS saat Anda membuka file ini langsung di luar pratinjau chat (misalnya dari GitHub Pages Anda atau membukanya sebagai tab peramban mandiri di HP/Laptop)."
-                        );
-                    };
-                    return;
-                }
-
                 badge.innerHTML = `<span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span> KONEKSI ERROR!`;
                 badge.className = "text-xs bg-rose-950 px-3 py-1.5 rounded-full text-rose-300 font-bold border border-rose-800 flex items-center gap-1.5 cursor-pointer animate-pulse";
                 badge.onclick = function() {
                     showAlert(
                         "Gagal Menghubungkan Google Sheets",
                         "Terjadi kesalahan koneksi (Failed to fetch).\n\n" +
-                        "LANGKAH PEMERIKSAAN WAJIB:\n" +
-                        "1. Pastikan Anda telah men-deploy ulang Google Apps Script dengan opsi akses diatur ke 'Anyone' (Semua Orang), bukan 'Only myself' (Hanya Saya).\n" +
-                        "2. Jika diatur ke 'Only myself', Google mendelegasikan pengalihan ke halaman otorisasi login yang memicu penolakan CORS oleh peramban.\n" +
-                        "3. Pastikan Anda sudah menjalankan tombol Run (Segitiga) sekali di editor Apps Script Anda untuk meloloskan Otorisasi Keamanan.\n\n" +
+                        "Mohon pastikan Apps Script dideploy sebagai Web App dengan akses 'Anyone'. Jika dibuka di iframe obrolan sandbox, browser mungkin memblokir CORS secara ketat.\n\n" +
                         "Detail Teknis: " + errDetail
                     );
                 };
@@ -697,7 +662,7 @@
         function updateSyncStatusUI() {
             const badge = document.getElementById('sync-status-badge');
             if (!isSheetsMode && badge) {
-                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Lokal Offline`;
+                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Offline`;
                 badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
             }
         }
@@ -1121,6 +1086,7 @@
             return `${year}-${month}-${day}`;
         }
 
+        // MENCARI BIDANG BERDASARKAN LOKET
         function getBidangByLoket(loketId) {
             for (let b in BIDANG_MAPPING) {
                 if (BIDANG_MAPPING[b].loket === loketId) return b;
@@ -1128,6 +1094,7 @@
             return null;
         }
 
+        // RESET COUNTER HARIAN
         function resetDailyCounters() {
             state.dailyCounter = { P: 0, S: 0, M: 0, G: 0, O: 0, T: 0 };
             state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
