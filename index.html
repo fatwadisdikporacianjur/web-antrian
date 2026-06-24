@@ -15,22 +15,7 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        /* Printing Optimization */
+        /* Printing Layout Optimization */
         @media print {
             body * {
                 visibility: hidden;
@@ -44,7 +29,7 @@
                 top: 0;
                 width: 100%;
                 max-width: 58mm;
-                padding: 0;
+                padding: 10px;
                 margin: 0;
                 background: white;
                 color: black;
@@ -55,11 +40,11 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <!-- TOP NAVIGATION (Only visible on launcher) -->
+    <!-- GLOBAL TOP NAVIGATION -->
     <header id="global-header" class="bg-slate-900 text-white shadow-md border-b border-slate-800">
         <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="goToView('launcher')">
-                <!-- Custom SVG Cianjur-like Crest Logo -->
+                <!-- Lambat Crest-like Shape -->
                 <svg class="w-10 h-10 text-emerald-500" viewBox="0 0 100 100" fill="currentColor">
                     <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="#0f172a" stroke="currentColor" stroke-width="4"/>
                     <path d="M50,15 L80,30 L80,70 L50,85 L20,70 L20,30 Z" fill="currentColor" opacity="0.15"/>
@@ -74,286 +59,285 @@
             </div>
             
             <div class="flex items-center space-x-3 mt-2 md:mt-0">
-                <!-- Live Database Status Badge -->
+                <!-- Status Badge -->
                 <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce"></span>
+                    <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
                     Mengecek koneksi...
                 </span>
                 <button onclick="goToView('launcher')" id="back-to-launcher-btn" class="hidden text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold py-1.5 px-3 rounded transition-all duration-200">
-                    <i class="fa-solid fa-chevron-left mr-1"></i> Ganti Tampilan
+                    <i class="fa-solid fa-chevron-left mr-1"></i> Ganti Tampilan Layar
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MAIN WRAPPER FOR SCREENS -->
+    <!-- MAIN CONTAINERS -->
     <main class="flex-grow flex flex-col">
 
-        <!-- 1. LAUNCHER SCREEN -->
+        <!-- 1. CENTRAL LAUNCHER SCREEN -->
         <div id="view-launcher" class="container mx-auto px-4 py-8 max-w-6xl flex-grow flex flex-col justify-center">
             <div class="text-center mb-10">
-                <span class="text-emerald-600 font-bold tracking-widest text-xs uppercase px-3 py-1 bg-emerald-100 rounded-full border border-emerald-200">SISTEM ANTRIAN AUTOMATIC CLOUD SYNC</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-950 mt-3 tracking-tight">Pusat Kendali Jaringan Antrian</h2>
-                <p class="text-slate-600 mt-2 max-w-xl mx-auto text-sm md:text-base">Silakan pilih jenis tampilan layar untuk perangkat ini. Seluruh perangkat otomatis tersinkronisasi menggunakan Google Sheets secara real-time.</p>
+                <span class="text-emerald-600 font-bold tracking-widest text-xs uppercase px-3 py-1 bg-emerald-100 rounded-full border border-emerald-200">SISTEM ANTRIAN HYBRID MULTI-DEVICE</span>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-950 mt-3 tracking-tight">Pilih Peran Perangkat Ini</h2>
+                <p class="text-slate-600 mt-2 max-w-2xl mx-auto text-sm md:text-base">Silakan tentukan peran komputer ini dalam jaringan pelayanan Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur.</p>
             </div>
 
-            <!-- Grid of Clients -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Card Kiosk -->
+            <!-- Device Roles Selection Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto w-full">
+                <!-- Role 1: Kiosk Cetak Tiket (Server) -->
                 <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-emerald-300 transition-all duration-300 group">
                     <div>
                         <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
                             <i class="fa-solid fa-print"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Mesin Tiket Kios</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Ditempatkan di pintu masuk utama pada PC touchscreen. Digunakan tamu untuk memilih bidang layanan dan mencetak tiket antrian.</p>
+                        <h3 class="text-lg font-bold text-slate-900">1. Kios Ambil & Cetak Tiket</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dijalankan pada komputer touchscreen / server pendaftaran tamu di lobi depan. Berfungsi mendaftarkan tamu baru ke Google Sheets dan mencetak nomor antrian fisik.</p>
                     </div>
-                    <div class="mt-6 space-y-2">
-                        <button onclick="goToView('kiosk')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
-                    </div>
-                </div>
-
-                <!-- Card Operator Console -->
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group">
-                    <div>
-                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                            <i class="fa-solid fa-headset"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-900">Layar Loket Operator</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Digunakan oleh petugas loket di masing-masing bidang (Loket 1 - 6) untuk memanggil, memanggil ulang, melewati, dan menyelesaikan antrian.</p>
-                    </div>
-                    <div class="mt-6 space-y-2">
-                        <button onclick="goToView('operator')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
+                    <div class="mt-6">
+                        <button onclick="goToView('kiosk')" class="w-full bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Mulai Mode Kios</button>
                     </div>
                 </div>
 
-                <!-- Card Display TV -->
+                <!-- Role 2: Layar TV Display -->
                 <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-amber-300 transition-all duration-300 group">
                     <div>
                         <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm">
                             <i class="fa-solid fa-tv"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Monitor TV Display</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dipasang pada TV gantung ruang tunggu utama. Menampilkan nomor antrian aktif, info loket, suara pemanggilan otomatis (TTS), dan running text.</p>
+                        <h3 class="text-lg font-bold text-slate-900">2. Layar Monitor TV Utama</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dijalankan pada komputer yang tersambung ke TV gantung ruang tunggu. Menampilkan nomor antrian aktif saat ini dan membunyikan suara panggilan otomatis.</p>
                     </div>
-                    <div class="mt-6 space-y-2">
-                        <button onclick="goToView('tv')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
+                    <div class="mt-6">
+                        <button onclick="goToView('tv')" class="w-full bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Mulai Mode TV</button>
                     </div>
                 </div>
 
-                <!-- Card Dashboard Admin -->
-                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-rose-300 transition-all duration-300 group">
+                <!-- Role 3: Operator Loket Caller -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 shadow-sm">
-                            <i class="fa-solid fa-chart-line"></i>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shadow-sm">
+                            <i class="fa-solid fa-headset"></i>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900">Admin & Laporan</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Panel khusus administrator untuk memantau data harian, mengunduh laporan (PDF, Excel), melacak aktivitas operator, dan mereset antrian.</p>
+                        <h3 class="text-lg font-bold text-slate-900">3. Konsol Operator Loket</h3>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dijalankan di laptop masing-masing petugas loket pelayanan (Loket 1 - 6). Digunakan untuk melihat daftar antrian dan memanggil nomor antrian berikutnya.</p>
                     </div>
-                    <div class="mt-6 space-y-2">
-                        <button onclick="goToView('admin')" class="w-full bg-slate-900 text-white font-semibold py-2 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Buka di Sini</button>
+                    <div class="mt-6">
+                        <button onclick="goToView('operator')" class="w-full bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Mulai Konsol Petugas</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration Utility Box -->
+            <div class="mt-12 max-w-xl mx-auto w-full bg-slate-100 rounded-2xl p-6 border border-slate-200">
+                <h4 class="text-xs font-bold text-slate-700 uppercase tracking-widest flex items-center gap-2 mb-3">
+                    <i class="fa-solid fa-gear text-slate-500"></i> Integrasi Google Sheets Cloud
+                </h4>
+                <div class="space-y-3">
+                    <p class="text-xs text-slate-500 leading-normal">
+                        Masukkan tautan Web App URL hasil deployment Google Apps Script Anda di bawah ini agar semua perangkat otomatis sinkron secara global.
+                    </p>
+                    <div class="flex gap-2">
+                        <input type="text" id="sheets-url-input" placeholder="https://script.google.com/macros/s/.../exec" class="flex-grow bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button onclick="saveSheetsConnection()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl text-xs transition shadow-sm">Simpan</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. KIOSK SCREEN -->
+        <!-- 2. KIOSK SCREEN (SERVER CETAK TIKET) -->
         <div id="view-kiosk" class="hidden flex-grow flex flex-col bg-slate-950 text-white">
-            <div class="bg-gradient-to-r from-blue-900 to-indigo-950 py-10 px-6 text-center border-b border-indigo-900 shadow-lg relative">
-                <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <!-- Header Kiosk -->
+            <div class="bg-gradient-to-r from-blue-900 to-indigo-950 py-8 px-6 text-center border-b border-indigo-900 shadow-lg relative">
                 <div class="relative flex flex-col items-center">
-                    <svg class="w-16 h-16 text-yellow-400 mb-4 drop-shadow-md" viewBox="0 0 100 100" fill="currentColor">
+                    <svg class="w-16 h-16 text-yellow-400 mb-3 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
                         <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="#1e3a8a" stroke="currentColor" stroke-width="4"/>
                         <circle cx="50" cy="50" r="18" fill="#eab308"/>
                         <polygon points="50,38 54,48 65,48 56,54 60,65 50,58 40,65 44,54 35,48 46,48" fill="#1e3a8a"/>
                     </svg>
-                    <span class="text-xs uppercase tracking-widest font-bold text-yellow-400 bg-blue-950/80 px-4 py-1.5 rounded-full border border-blue-800">SISTEM AMBIL ANTRIAN MANDIRI</span>
-                    <h2 class="text-3xl md:text-4xl font-black tracking-tight mt-3">DINAS PENDIDIKAN PEMUDA DAN OLAHRAGA</h2>
-                    <p class="text-sm md:text-base text-indigo-200 font-medium tracking-wide mt-1">Kabupaten Cianjur</p>
-                    <div class="w-24 h-1 bg-yellow-400 rounded-full mt-4"></div>
+                    <span class="text-xs uppercase tracking-widest font-bold text-yellow-400 bg-blue-950/80 px-4 py-1 rounded-full border border-blue-800">SISTEM AMBIL ANTRIAN MANDIRI</span>
+                    <h2 class="text-2xl md:text-3xl font-black tracking-tight mt-2">DINAS PENDIDIKAN PEMUDA DAN OLAHRAGA</h2>
+                    <p class="text-xs text-indigo-200 font-semibold tracking-wide mt-1">Kabupaten Cianjur</p>
                 </div>
             </div>
 
+            <!-- Buttons Grid -->
             <div class="flex-grow container mx-auto px-4 py-8 flex flex-col justify-center max-w-5xl">
                 <div class="text-center mb-8">
-                    <h3 class="text-xl md:text-2xl font-bold text-slate-100">Silakan Pilih Bidang Layanan yang Anda Tuju:</h3>
-                    <p class="text-sm text-slate-400 mt-1">Sentuh tombol di bawah ini, nomor antrian Anda akan dicetak secara otomatis.</p>
+                    <h3 class="text-lg md:text-xl font-bold text-slate-100">Silakan Sentuh Bidang Layanan yang Anda Tuju:</h3>
+                    <p class="text-xs text-slate-400 mt-1">Sistem akan memproses nomor pendaftaran dan mencetak struk fisik Anda secara otomatis.</p>
                 </div>
 
-                <!-- Grid Buttons of Services -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- PAUDDIKMAS -->
-                    <button onclick="createTicket('PAUDDIKMAS')" class="bg-gradient-to-b from-blue-800 to-blue-950 border border-blue-700/50 hover:border-blue-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-blue-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-blue-900/60 flex items-center justify-center text-blue-400 text-xl font-bold group-hover:scale-110 transition-transform">P</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">PAUDDIKMAS</span>
-                            <span class="block text-xs text-blue-300 mt-1">Pendidikan Anak Usia Dini & Pend. Masyarakat</span>
+                    <!-- Bidang PAUDDIKMAS -->
+                    <button onclick="createTicket('PAUDDIKMAS')" class="bg-gradient-to-b from-blue-800 to-blue-950 border border-blue-700/50 hover:border-blue-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-blue-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-blue-900/60 flex items-center justify-center text-blue-400 text-lg font-bold group-hover:scale-110 transition-transform">P</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">PAUDDIKMAS</span>
+                            <span class="block text-[10px] text-blue-300 mt-1">Pendidikan Anak Usia Dini & Pend. Masyarakat</span>
                         </div>
                     </button>
 
-                    <!-- SD -->
-                    <button onclick="createTicket('SD')" class="bg-gradient-to-b from-emerald-800 to-emerald-950 border border-emerald-700/50 hover:border-emerald-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-emerald-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-xl font-bold group-hover:scale-110 transition-transform">S</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">SD</span>
-                            <span class="block text-xs text-emerald-300 mt-1">Sekolah Dasar</span>
+                    <!-- Bidang SD -->
+                    <button onclick="createTicket('SD')" class="bg-gradient-to-b from-emerald-800 to-emerald-950 border border-emerald-700/50 hover:border-emerald-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-emerald-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-lg font-bold group-hover:scale-110 transition-transform">S</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">SD</span>
+                            <span class="block text-[10px] text-emerald-300 mt-1">Sekolah Dasar</span>
                         </div>
                     </button>
 
-                    <!-- SMP -->
-                    <button onclick="createTicket('SMP')" class="bg-gradient-to-b from-purple-800 to-purple-950 border border-purple-700/50 hover:border-purple-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-purple-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-purple-900/60 flex items-center justify-center text-purple-400 text-xl font-bold group-hover:scale-110 transition-transform">M</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">SMP</span>
-                            <span class="block text-xs text-purple-300 mt-1">Sekolah Menengah Pertama</span>
+                    <!-- Bidang SMP -->
+                    <button onclick="createTicket('SMP')" class="bg-gradient-to-b from-purple-800 to-purple-950 border border-purple-700/50 hover:border-purple-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-purple-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-purple-900/60 flex items-center justify-center text-purple-400 text-lg font-bold group-hover:scale-110 transition-transform">M</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">SMP</span>
+                            <span class="block text-[10px] text-purple-300 mt-1">Sekolah Menengah Pertama</span>
                         </div>
                     </button>
 
-                    <!-- GTK -->
-                    <button onclick="createTicket('GTK')" class="bg-gradient-to-b from-amber-800 to-amber-950 border border-amber-700/50 hover:border-amber-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-amber-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-amber-900/60 flex items-center justify-center text-amber-400 text-xl font-bold group-hover:scale-110 transition-transform">G</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">GTK</span>
-                            <span class="block text-xs text-amber-300 mt-1">Guru & Tenaga Kependidikan</span>
+                    <!-- Bidang GTK -->
+                    <button onclick="createTicket('GTK')" class="bg-gradient-to-b from-amber-800 to-amber-950 border border-amber-700/50 hover:border-amber-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-amber-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-amber-900/60 flex items-center justify-center text-amber-400 text-lg font-bold group-hover:scale-110 transition-transform">G</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">GTK</span>
+                            <span class="block text-[10px] text-amber-300 mt-1">Guru & Tenaga Kependidikan</span>
                         </div>
                     </button>
 
-                    <!-- PORA -->
-                    <button onclick="createTicket('PORA')" class="bg-gradient-to-b from-cyan-800 to-cyan-950 border border-cyan-700/50 hover:border-cyan-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-cyan-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-cyan-900/60 flex items-center justify-center text-cyan-400 text-xl font-bold group-hover:scale-110 transition-transform">O</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">PORA</span>
-                            <span class="block text-xs text-cyan-300 mt-1">Pemuda & Olahraga</span>
+                    <!-- Bidang PORA -->
+                    <button onclick="createTicket('PORA')" class="bg-gradient-to-b from-cyan-800 to-cyan-950 border border-cyan-700/50 hover:border-cyan-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-cyan-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-cyan-900/60 flex items-center justify-center text-cyan-400 text-lg font-bold group-hover:scale-110 transition-transform">O</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">PORA</span>
+                            <span class="block text-[10px] text-cyan-300 mt-1">Pemuda & Olahraga</span>
                         </div>
                     </button>
 
                     <!-- SEKRETARIAT -->
-                    <button onclick="createTicket('SEKRETARIAT')" class="bg-gradient-to-b from-rose-800 to-rose-950 border border-rose-700/50 hover:border-rose-400 rounded-2xl p-6 flex flex-col items-center justify-between text-center min-h-[160px] shadow-lg hover:shadow-rose-950/50 hover:-translate-y-1 transition-all duration-300 group">
-                        <div class="w-12 h-12 rounded-full bg-rose-900/60 flex items-center justify-center text-rose-400 text-xl font-bold group-hover:scale-110 transition-transform">T</div>
-                        <div class="mt-4">
-                            <span class="block text-2xl font-black text-white group-hover:text-yellow-300 transition-colors">SEKRETARIAT</span>
-                            <span class="block text-xs text-rose-300 mt-1">Kepegawaian, Keuangan, Perencanaan</span>
+                    <button onclick="createTicket('SEKRETARIAT')" class="bg-gradient-to-b from-rose-800 to-rose-950 border border-rose-700/50 hover:border-rose-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-rose-950/50 hover:-translate-y-1 transition-all duration-300 group">
+                        <div class="w-10 h-10 rounded-full bg-rose-900/60 flex items-center justify-center text-rose-400 text-lg font-bold group-hover:scale-110 transition-transform">T</div>
+                        <div class="mt-3">
+                            <span class="block text-xl font-black text-white group-hover:text-yellow-300 transition-colors">SEKRETARIAT</span>
+                            <span class="block text-[10px] text-rose-300 mt-1">Umum, Perencanaan, Keuangan, Kepegawaian</span>
                         </div>
                     </button>
                 </div>
             </div>
-
-            <!-- Footer Kiosk -->
-            <div class="py-4 text-center text-slate-500 border-t border-slate-900 text-xs">
-                © 2026 Disdikpora Kabupaten Cianjur • Sinkronisasi Google Sheets Aktif
-            </div>
         </div>
 
-        <!-- 3. TV DISPLAY SCREEN -->
+        <!-- 3. TV MONITOR DISPLAY SCREEN -->
         <div id="view-tv" class="hidden flex-grow flex flex-col bg-slate-950 text-white select-none">
             <!-- TV Header -->
-            <div class="bg-slate-900 border-b-2 border-amber-500 px-6 py-4 flex justify-between items-center shadow-2xl">
+            <div class="bg-slate-900 border-b border-amber-500 px-6 py-4 flex justify-between items-center shadow-md">
                 <div class="flex items-center space-x-4">
-                    <!-- Cianjur Crest -->
-                    <svg class="w-16 h-16 text-yellow-400 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
+                    <svg class="w-14 h-14 text-yellow-400 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
                         <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="#0f172a" stroke="currentColor" stroke-width="4"/>
                         <circle cx="50" cy="50" r="18" fill="#eab308"/>
                         <polygon points="50,38 54,48 65,48 56,54 60,65 50,58 40,65 44,54 35,48 46,48" fill="#1e3a8a"/>
                     </svg>
                     <div>
-                        <h1 class="text-lg md:text-2xl font-black tracking-wider leading-none text-slate-50">DINAS PENDIDIKAN PEMUDA DAN OLAHRAGA</h1>
-                        <p class="text-xs md:text-sm font-bold tracking-widest text-emerald-400 uppercase mt-1">Kabupaten Cianjur</p>
+                        <h1 class="text-md md:text-xl font-black tracking-wider text-slate-50 leading-none">DINAS PENDIDIKAN PEMUDA DAN OLAHRAGA</h1>
+                        <p class="text-[10px] md:text-xs font-bold tracking-widest text-emerald-400 uppercase mt-1">Kabupaten Cianjur</p>
                     </div>
                 </div>
-                <!-- TV Audio Control -->
+                <!-- TV Audio Control & Clock -->
                 <div class="flex items-center gap-6">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 flex items-center gap-3">
-                        <i class="fa-solid fa-volume-high text-emerald-400 animate-pulse"></i>
-                        <span class="text-xs font-bold text-slate-300">Audio Broadcast: Aktif</span>
+                    <div id="tv-audio-notif" class="hidden bg-rose-950 border border-rose-800 rounded-xl px-4 py-2 flex items-center gap-3 cursor-pointer animate-pulse" onclick="enableAudioContext()">
+                        <i class="fa-solid fa-volume-xmark text-rose-400"></i>
+                        <span class="text-xs font-bold text-rose-300">Suara Terblokir! Sentuh Layar Ini</span>
+                    </div>
+                    <div id="tv-audio-active-badge" class="bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 flex items-center gap-3">
+                        <i class="fa-solid fa-volume-high text-emerald-400"></i>
+                        <span class="text-xs font-bold text-slate-300 font-mono">Audio Aktif</span>
                     </div>
                     <div class="text-right">
-                        <p id="tv-digital-clock" class="text-3xl font-black font-mono tracking-wider text-amber-400">00:00:00</p>
-                        <p id="tv-digital-date" class="text-xs text-slate-400 font-bold uppercase mt-0.5">Kamis, 18 Juni 2026</p>
+                        <p id="tv-digital-clock" class="text-2xl font-black font-mono tracking-wider text-amber-400">00:00:00</p>
+                        <p id="tv-digital-date" class="text-[10px] text-slate-400 font-bold uppercase mt-0.5">Hari ini</p>
                     </div>
                 </div>
             </div>
 
             <!-- TV Main Content Body -->
             <div class="flex-grow grid grid-cols-12 gap-6 p-6">
-                <!-- Left Column -->
-                <div class="col-span-12 lg:col-span-7 flex flex-col gap-6">
-                    <div id="tv-calling-card" class="flex-grow bg-slate-900/80 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-all duration-300">
+                <!-- Left Screen: Current Large Caller -->
+                <div class="col-span-12 lg:col-span-7 flex flex-col">
+                    <div id="tv-calling-card" class="flex-grow bg-slate-900 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-all duration-300">
                         <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/5 to-transparent pointer-events-none"></div>
                         <div id="tv-pulse-glow" class="hidden absolute inset-0 bg-amber-500/10 animate-pulse border-4 border-amber-400 rounded-3xl"></div>
 
                         <div class="text-center relative z-10">
-                            <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 text-sm font-extrabold uppercase px-6 py-2 rounded-full tracking-widest inline-block mb-2 shadow-sm animate-bounce">SEDANG DIPANGGIL</span>
-                            <h3 class="text-xl md:text-2xl text-slate-400 font-semibold mt-4">Nomor Antrian</h3>
+                            <span class="bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-extrabold uppercase px-6 py-2 rounded-full tracking-widest inline-block mb-2 shadow-sm animate-bounce">SEDANG DIPANGGIL</span>
+                            <h3 class="text-lg text-slate-400 font-semibold mt-4">Nomor Antrian</h3>
                         </div>
 
-                        <div class="text-center my-6 relative z-10">
-                            <h2 id="tv-active-num" class="text-[120px] md:text-[160px] font-black leading-none tracking-tight text-white drop-shadow-lg font-mono">--</h2>
-                            <div id="tv-active-destination" class="text-xl md:text-2xl font-bold text-slate-300 bg-slate-950/60 border border-slate-800 py-3 px-6 rounded-2xl inline-block mt-4">
+                        <div class="text-center my-4 relative z-10">
+                            <h2 id="tv-active-num" class="text-[100px] md:text-[140px] font-black leading-none tracking-tight text-white drop-shadow-lg font-mono">--</h2>
+                            <div id="tv-active-destination" class="text-lg md:text-xl font-bold text-slate-300 bg-slate-950/60 border border-slate-800 py-2.5 px-6 rounded-2xl inline-block mt-4">
                                 Silakan menuju loket tujuan
                             </div>
                         </div>
 
                         <div class="text-center relative z-10">
                             <div class="w-full bg-slate-950/40 rounded-2xl p-4 border border-slate-800">
-                                <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider">LOKET TUJUAN</p>
+                                <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">LOKET TUJUAN</p>
                                 <p id="tv-active-loket" class="text-2xl font-extrabold text-amber-400 mt-1">LOKET --</p>
-                                <p id="tv-active-bidang" class="text-sm font-semibold text-slate-300">--</p>
+                                <p id="tv-active-bidang" class="text-xs font-semibold text-slate-300">--</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right Column -->
+                <!-- Right Screen: Loket State Grid -->
                 <div class="col-span-12 lg:col-span-5 flex flex-col gap-4 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl shadow-xl">
-                    <h3 class="text-md font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-list-ol text-amber-500"></i> STATUS LOKET PELAYANAN
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-list-ol text-amber-500"></i> STATUS SETIAP LOKET
                     </h3>
                     <div class="flex-grow grid grid-cols-1 gap-3 overflow-y-auto">
                         <!-- Loket 1 -->
                         <div id="tv-loket-box-1" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 1</h4>
-                                <p class="text-xs text-slate-500">Bidang PAUDDIKMAS</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 1</h4>
+                                <p class="text-[10px] text-slate-500">Bidang PAUDDIKMAS</p>
                             </div>
                             <span id="tv-loket-num-1" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
                         <!-- Loket 2 -->
                         <div id="tv-loket-box-2" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 2</h4>
-                                <p class="text-xs text-slate-500">Bidang Sekolah Dasar (SD)</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 2</h4>
+                                <p class="text-[10px] text-slate-500">Bidang Sekolah Dasar (SD)</p>
                             </div>
                             <span id="tv-loket-num-2" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
                         <!-- Loket 3 -->
                         <div id="tv-loket-box-3" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 3</h4>
-                                <p class="text-xs text-slate-500">Bidang SMP</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 3</h4>
+                                <p class="text-[10px] text-slate-500">Bidang SMP</p>
                             </div>
                             <span id="tv-loket-num-3" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
                         <!-- Loket 4 -->
                         <div id="tv-loket-box-4" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 4</h4>
-                                <p class="text-xs text-slate-500">Bidang GTK</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 4</h4>
+                                <p class="text-[10px] text-slate-500">Bidang GTK</p>
                             </div>
                             <span id="tv-loket-num-4" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
                         <!-- Loket 5 -->
                         <div id="tv-loket-box-5" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 5</h4>
-                                <p class="text-xs text-slate-500">Bidang Pemuda & Olahraga</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 5</h4>
+                                <p class="text-[10px] text-slate-500">Bidang Pemuda & Olahraga</p>
                             </div>
                             <span id="tv-loket-num-5" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
                         <!-- Loket 6 -->
                         <div id="tv-loket-box-6" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
-                                <h4 class="font-extrabold text-slate-300 text-sm uppercase">LOKET 6</h4>
-                                <p class="text-xs text-slate-500">Sekretariat</p>
+                                <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 6</h4>
+                                <p class="text-[10px] text-slate-500">Sekretariat</p>
                             </div>
                             <span id="tv-loket-num-6" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
@@ -361,11 +345,11 @@
                 </div>
             </div>
 
-            <!-- TV Running Text -->
+            <!-- TV Announcement Ticker -->
             <div class="bg-amber-500 text-slate-950 font-bold py-3 text-sm overflow-hidden flex items-center border-t border-amber-600 shadow-xl">
                 <div class="whitespace-nowrap flex animate-[marquee_25s_linear_infinite] gap-10">
-                    <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Utamakan Kesopanan, Pelayanan Prima, Efisien, dan Transparan demi Pendidikan Cianjur Lebih Baik.</span>
-                    <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Utamakan Kesopanan, Pelayanan Prima, Efisien, dan Transparan demi Pendidikan Cianjur Lebih Baik.</span>
+                    <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Pelayanan Prima, Efisien, Transparan, dan Adil.</span>
+                    <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Pelayanan Prima, Efisien, Transparan, dan Adil.</span>
                 </div>
             </div>
 
@@ -377,253 +361,103 @@
             </style>
         </div>
 
-        <!-- 4. LOKET OPERATOR SCREEN -->
+        <!-- 4. LOKET OPERATOR CALLER SCREEN -->
         <div id="view-operator" class="hidden flex-grow container mx-auto px-4 py-8 max-w-5xl">
-            <!-- Operator Login Box -->
+            <!-- Operator Login Panel -->
             <div id="operator-login-panel" class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mt-10">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
                         <i class="fa-solid fa-headset"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900">Login Operator Loket</h3>
-                    <p class="text-xs text-slate-500 mt-1">Gunakan PIN standard (123456) untuk mengakses loket.</p>
+                    <h3 class="text-xl font-bold text-slate-900">Masuk Konsol Loket</h3>
+                    <p class="text-xs text-slate-500 mt-1">Pilih nomor loket tugas Anda saat ini.</p>
                 </div>
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-600 mb-1">Pilih Loket Tugas</label>
-                        <select id="operator-select-loket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="1">Loket 1 - Bidang PAUDDIKMAS (P)</option>
-                            <option value="2">Loket 2 - Bidang SD (S)</option>
-                            <option value="3">Loket 3 - Bidang SMP (M)</option>
-                            <option value="4">Loket 4 - Bidang GTK (G)</option>
-                            <option value="5">Loket 5 - Bidang PORA (O)</option>
-                            <option value="6">Loket 6 - Sekretariat (T)</option>
+                        <select id="operator-select-loket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="1">Loket 1 - Bidang PAUDDIKMAS (Prefix: P)</option>
+                            <option value="2">Loket 2 - Bidang Sekolah Dasar (Prefix: S)</option>
+                            <option value="3">Loket 3 - Bidang SMP (Prefix: M)</option>
+                            <option value="4">Loket 4 - Bidang GTK (Prefix: G)</option>
+                            <option value="5">Loket 5 - Bidang PORA (Prefix: O)</option>
+                            <option value="6">Loket 6 - Sekretariat (Prefix: T)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">PIN Pengaman</label>
-                        <input type="password" id="operator-pin" placeholder="Masukkan PIN" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" value="123456">
+                        <label class="block text-xs font-bold text-slate-600 mb-1">PIN Pengaman Standard</label>
+                        <input type="password" id="operator-pin" placeholder="Masukkan PIN 123456" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" value="123456">
                     </div>
                     <div id="operator-login-error" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 p-3 rounded-lg flex items-center gap-2">
-                        <i class="fa-solid fa-circle-exclamation"></i> Password PIN salah! Gunakan PIN default 123456.
+                        <i class="fa-solid fa-circle-exclamation"></i> Kode PIN yang dimasukkan salah!
                     </div>
-                    <button onclick="loginOperator()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition shadow">Masuk Kerja</button>
+                    <button onclick="loginOperator()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-xs transition shadow">Mulai Bekerja</button>
                 </div>
             </div>
 
-            <!-- Operator Interactive Panel -->
+            <!-- Operator Control Panel (Active Session) -->
             <div id="operator-active-panel" class="hidden grid grid-cols-12 gap-6">
-                <!-- Status Row -->
+                <!-- Status Header Row -->
                 <div class="col-span-12 bg-slate-900 text-white rounded-3xl p-6 flex flex-wrap justify-between items-center shadow-xl">
                     <div>
                         <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Sesi Aktif</span>
-                        <h2 id="op-title" class="text-2xl font-black tracking-tight mt-1">LOKET --</h2>
+                        <h2 id="op-title" class="text-xl font-black tracking-tight mt-1">LOKET --</h2>
                         <p id="op-sub" class="text-xs text-slate-400 mt-0.5">Bidang --</p>
                     </div>
-                    <div class="flex items-center space-x-3 mt-4 md:mt-0">
+                    <div>
                         <button onclick="logoutOperator()" class="bg-slate-800 hover:bg-rose-900 text-slate-300 hover:text-white font-semibold py-2 px-4 rounded-xl text-xs transition duration-200">
-                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Log Out
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Selesai Sesi
                         </button>
                     </div>
                 </div>
 
-                <!-- Main Service controls -->
+                <!-- Main Console Call Buttons -->
                 <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
-                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg flex flex-col justify-between min-h-[360px] relative overflow-hidden">
-                        <div class="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg flex flex-col justify-between min-h-[340px] relative overflow-hidden">
+                        <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
                         
                         <div>
                             <p class="text-xs font-bold text-slate-500 tracking-wider uppercase">SEDANG DILAYANI</p>
                             <div class="flex items-baseline justify-between mt-4">
-                                <h1 id="op-current-num" class="text-7xl md:text-8xl font-black text-slate-950 font-mono tracking-tighter">--</h1>
+                                <h1 id="op-current-num" class="text-6xl md:text-7xl font-black text-slate-950 font-mono tracking-tighter">--</h1>
                                 <div class="text-right">
                                     <span id="op-status-badge" class="bg-slate-100 text-slate-500 text-xs font-black uppercase px-3 py-1 rounded-full border">IDLE</span>
-                                    <p id="op-current-time" class="text-xs text-slate-500 mt-1">Jam Ambil: --</p>
+                                    <p id="op-current-time" class="text-xs text-slate-500 mt-1">Terdaftar: --</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Buttons layout -->
+                        <!-- Panel Buttons -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-                            <!-- Panggil Berikutnya -->
-                            <button onclick="operatorAction('NEXT')" class="col-span-2 md:col-span-2 bg-emerald-600 hover:bg-emerald-50 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 hover:shadow-lg shadow-emerald-500/10">
-                                <i class="fa-solid fa-forward-step text-2xl"></i>
-                                <span class="font-extrabold text-sm">Panggil Berikutnya</span>
+                            <button onclick="operatorAction('NEXT')" class="col-span-2 md:col-span-2 bg-emerald-600 hover:bg-emerald-700 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 shadow-sm">
+                                <i class="fa-solid fa-forward-step text-xl"></i>
+                                <span class="font-extrabold text-xs">Panggil Berikutnya</span>
                             </button>
-                            <!-- Panggil Ulang -->
-                            <button onclick="operatorAction('RECALL')" class="bg-amber-500 hover:bg-amber-400 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 hover:shadow-lg shadow-amber-500/10">
-                                <i class="fa-solid fa-bullhorn text-2xl"></i>
+                            <button onclick="operatorAction('RECALL')" class="bg-amber-500 hover:bg-amber-600 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 shadow-sm">
+                                <i class="fa-solid fa-bullhorn text-xl"></i>
                                 <span class="font-bold text-xs">Panggil Ulang</span>
                             </button>
-                            <!-- Lewati -->
-                            <button onclick="operatorAction('SKIP')" class="bg-rose-500 hover:bg-rose-400 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 hover:shadow-lg shadow-rose-500/10">
-                                <i class="fa-solid fa-forward text-2xl"></i>
+                            <button onclick="operatorAction('SKIP')" class="bg-rose-500 hover:bg-rose-600 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 shadow-sm">
+                                <i class="fa-solid fa-forward text-xl"></i>
                                 <span class="font-bold text-xs">Lewati</span>
                             </button>
-                            <!-- Selesai -->
-                            <button onclick="operatorAction('DONE')" class="col-span-2 md:col-span-4 bg-blue-600 hover:bg-blue-500 text-white py-4 px-6 rounded-2xl flex items-center justify-center gap-2 transition duration-200 font-extrabold text-md shadow hover:shadow-lg">
-                                <i class="fa-solid fa-check-double text-lg"></i>
-                                Selesai Melayani Pemohon
+                            <button onclick="operatorAction('DONE')" class="col-span-2 md:col-span-4 bg-blue-600 hover:bg-blue-700 text-white py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 transition duration-200 font-extrabold text-xs shadow-sm">
+                                <i class="fa-solid fa-check-double text-sm"></i> Selesai Melayani & Simpan
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Right sidebar -->
-                <div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+                <!-- Right Waiting List Pane -->
+                <div class="col-span-12 lg:col-span-4 flex flex-col">
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg flex-grow flex flex-col">
                         <h3 class="text-xs font-extrabold text-slate-500 tracking-wider uppercase mb-4 flex items-center justify-between border-b pb-3">
                             <span>SISA ANTRIAN BIDANG</span>
                             <span id="op-waiting-count" class="bg-rose-100 text-rose-600 font-black text-xs px-2.5 py-0.5 rounded-full">0</span>
                         </h3>
-                        <div id="op-waiting-list" class="flex-grow space-y-2 overflow-y-auto max-h-[300px]">
-                            <!-- Filled dynamically -->
+                        <div id="op-waiting-list" class="flex-grow space-y-2 overflow-y-auto max-h-[260px]">
+                            <!-- List Antrian yang Menunggu -->
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 5. DASHBOARD ADMIN SCREEN -->
-        <div id="view-admin" class="hidden flex-grow container mx-auto px-4 py-8 max-w-6xl">
-            <!-- Password Gate -->
-            <div id="admin-login-panel" class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mt-10">
-                <div class="text-center mb-6">
-                    <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
-                        <i class="fa-solid fa-lock"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-900">Verifikasi Administrator</h3>
-                    <p class="text-xs text-slate-500 mt-1">Gunakan sandi default (admin123) untuk meluncurkan dashboard.</p>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-600 mb-1">Kata Sandi</label>
-                        <input type="password" id="admin-password" placeholder="Masukkan Sandi" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500" value="admin123">
-                    </div>
-                    <div id="admin-login-error" class="hidden text-xs text-rose-500 font-semibold bg-rose-50 p-3 rounded-lg flex items-center gap-2">
-                        <i class="fa-solid fa-circle-exclamation"></i> Sandi salah! Hubungi Tim IT Disdikpora.
-                    </div>
-                    <button onclick="loginAdmin()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-bold py-3 rounded-xl transition shadow">Konfirmasi</button>
-                </div>
-            </div>
-
-            <!-- Dashboard Content Panel -->
-            <div id="admin-dashboard-panel" class="hidden space-y-6">
-                <!-- Row Stats -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow flex items-center gap-4">
-                        <div class="w-12 h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-users"></i></div>
-                        <div>
-                            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">TOTAL TAMU</span>
-                            <span id="stat-total" class="text-2xl font-black text-slate-900 leading-none">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow flex items-center gap-4">
-                        <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-hourglass-half"></i></div>
-                        <div>
-                            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">MENUNGGU</span>
-                            <span id="stat-waiting" class="text-2xl font-black text-slate-900 leading-none">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-spinner"></i></div>
-                        <div>
-                            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">DILAYANI</span>
-                            <span id="stat-serving" class="text-2xl font-black text-slate-900 leading-none">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow flex items-center gap-4">
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shadow-sm"><i class="fa-solid fa-circle-check"></i></div>
-                        <div>
-                            <span class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">SELESAI</span>
-                            <span id="stat-completed" class="text-2xl font-black text-slate-900 leading-none">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Graphs & Breakdown Grid -->
-                <div class="grid grid-cols-12 gap-6">
-                    <div class="col-span-12 lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-100 shadow-lg">
-                        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Volume Layanan Berdasarkan Bidang</h3>
-                        <div class="h-[280px]">
-                            <canvas id="admin-chart-canvas"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-span-12 lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-lg flex flex-col justify-between">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4">Detail Per-Bidang</h3>
-                            <div class="space-y-2">
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">PAUDDIKMAS (P)</span>
-                                    <span id="stat-p" class="font-extrabold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">SD (S)</span>
-                                    <span id="stat-s" class="font-extrabold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">SMP (M)</span>
-                                    <span id="stat-m" class="font-extrabold bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">GTK (G)</span>
-                                    <span id="stat-g" class="font-extrabold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">PORA (O)</span>
-                                    <span id="stat-o" class="font-extrabold bg-cyan-100 text-cyan-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                                <div class="flex justify-between items-center text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl">
-                                    <span class="font-semibold">SEKRETARIAT (T)</span>
-                                    <span id="stat-t" class="font-extrabold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">0</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Reset / Utility controls -->
-                        <div class="mt-6 pt-4 border-t border-slate-100">
-                            <button onclick="confirmReset()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl text-xs transition duration-200 border border-rose-200">
-                                <i class="fa-solid fa-trash-can mr-1"></i> Reset Seluruh Antrian Hari Ini
-                            </button>
-                            <p class="text-[10px] text-center text-slate-400 mt-2">Menyetel ulang counter dari awal (P000, dll) tanpa menghapus arsip.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Database Logs table -->
-                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg">
-                    <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-                        <div>
-                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Arsip Log Database</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Saring logs transaksi pelayanan berdasarkan status.</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="exportToExcel()" class="bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 font-bold py-2 px-4 rounded-xl text-xs transition border border-slate-200 flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> Ekspor Excel
-                            </button>
-                            <button onclick="exportToPDF()" class="bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-bold py-2 px-4 rounded-xl text-xs transition border border-slate-200 flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-pdf"></i> Ekspor PDF
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto rounded-xl border border-slate-100">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-500 uppercase">
-                                    <th class="p-3">Kode Antrian</th>
-                                    <th class="p-3">Bidang</th>
-                                    <th class="p-3">Loket Tugas</th>
-                                    <th class="p-3">Jam Ambil</th>
-                                    <th class="p-3">Jam Panggil</th>
-                                    <th class="p-3">Jam Selesai</th>
-                                    <th class="p-3">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-table-body" class="text-xs divide-y divide-slate-100">
-                                <!-- Filled dynamically -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -653,11 +487,11 @@
                 <div class="space-y-1 text-[8px] border-b border-dashed border-slate-300 pb-3 mb-3">
                     <div class="flex justify-between">
                         <span>Tanggal:</span>
-                        <span id="ticket-date-out">18/06/2026</span>
+                        <span id="ticket-date-out">--/--/----</span>
                     </div>
                     <div class="flex justify-between">
                         <span>Jam Ambil:</span>
-                        <span id="ticket-time-out">12:30:15</span>
+                        <span id="ticket-time-out">--:--:--</span>
                     </div>
                 </div>
                 <div class="text-[8px] text-slate-500 text-center leading-normal">
@@ -669,66 +503,39 @@
             <div class="grid grid-cols-2 gap-3 mt-6">
                 <button onclick="document.getElementById('thermal-printer-modal').classList.add('hidden')" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold py-2 px-4 rounded-xl text-xs transition">Tutup</button>
                 <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-50 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
-                    <i class="fa-solid fa-print"></i> Cetak Sekarang
+                    <i class="fa-solid fa-print"></i> Cetak Tiket
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- AUDIO NOTIFICATION ELEMENT -->
-    <audio id="audio-chime" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-200.wav" type="audio/wav">
-    </audio>
-
     <!-- CUSTOM ALERT DIALOG MODAL -->
     <div id="custom-alert-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
-            <h3 id="alert-title" class="text-md font-bold text-slate-900 uppercase tracking-wider mb-2">Pemberitahuan</h3>
-            <p id="alert-message" class="text-sm text-slate-600">Pemberitahuan penting.</p>
+            <h3 id="alert-title" class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Pemberitahuan</h3>
+            <p id="alert-message" class="text-xs text-slate-600">Isi pesan informasi.</p>
             <div class="mt-5 flex justify-end">
-                <button onclick="document.getElementById('custom-alert-modal').classList.add('hidden')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-xl text-xs shadow transition">Ok, Paham</button>
+                <button onclick="document.getElementById('custom-alert-modal').classList.add('hidden')" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-xl text-xs shadow transition">Paham</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT LOGICS -->
+    <!-- SCRIPTS CORE SYSTEM LOGICS -->
     <script>
-        // =========================================================================
-        // 🌟 CONFIGURASI SPREADSHEET UTAMA (CUKUP TEMPEL 1x DI SINI!)
-        // =========================================================================
-        // Gantilah teks di bawah dengan Web App URL Google Apps Script Anda.
-        // Setelah Anda commit perubahan file index.html ke GitHub, semua perangkat
-        // yang membuka link Anda akan otomatis tersambung tanpa perlu input manual!
-        const SPREADSHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxxNOeQLkVyY2aSgFsDnMCSpYj5Jiik65yuCDFwS8TEvRjGNUxOSqz-yl6Q2Dpz18mY/exec";
-        // =========================================================================
-
-        // CLIENT SERVER LAN BROADCAST CHANNEL
+        // CLIENT SERVER BROADCAST CHANNEL (Komunikasi Lokal Tab)
         const channel = new BroadcastChannel('disdikpora_queue_system');
 
-        // DATABASE STATE IN-MEMORY / LOCAL STORAGE
+        // DATABASE STATE IN-MEMORY
         let state = {
             queues: [],
-            activeCalls: {
-                1: null,
-                2: null,
-                3: null,
-                4: null,
-                5: null,
-                6: null
-            },
+            activeCalls: { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null },
             currentView: 'launcher',
             operatorSession: null,
-            dailyCounter: {
-                P: 0,
-                S: 0,
-                M: 0,
-                G: 0,
-                O: 0,
-                T: 0
-            },
+            dailyCounter: { P: 0, S: 0, M: 0, G: 0, O: 0, T: 0 },
             lastResetDate: ""
         };
 
+        // PEMETAAN DATA BIDANG DAN LOKET
         const BIDANG_MAPPING = {
             'PAUDDIKMAS': { prefix: 'P', loket: 1, name: 'PAUDDIKMAS' },
             'SD': { prefix: 'S', loket: 2, name: 'Bidang Sekolah Dasar' },
@@ -738,35 +545,26 @@
             'SEKRETARIAT': { prefix: 'T', loket: 6, name: 'Sekretariat' }
         };
 
+        const SPREADSHEET_WEBAPP_URL_KEY = 'https://script.google.com/macros/s/AKfycbyVAy4e4g5G2_VBtU4RZo_P3zaZNfdqngVlRx07gRLsPUnl3_YTjV14lCqkGyS-0E8d/exec';
         let sheetsUrl = "";
         let isSheetsMode = false;
-        let isUsingHardcodedUrl = false;
+        let lastAnnouncedTickets = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
 
-        // Initialize database
+        // INITIALIZE DATABASE
         async function initDatabase() {
-            // Priority 1: Check if there's a hardcoded URL inside the SPREADSHEET_WEBAPP_URL variable
-            if (SPREADSHEET_WEBAPP_URL && SPREADSHEET_WEBAPP_URL !== "MASUKKAN_URL_WEB_APP_ANDA_DI_SINI" && SPREADSHEET_WEBAPP_URL.trim() !== "") {
-                sheetsUrl = SPREADSHEET_WEBAPP_URL.trim();
-                isSheetsMode = true;
-                isUsingHardcodedUrl = true;
-            } else {
-                // Priority 2: Fallback to manual local storage URL saved on launcher (if any)
-                sheetsUrl = localStorage.getItem('disdikpora_sheets_url') || "";
-                isSheetsMode = sheetsUrl !== "";
-                isUsingHardcodedUrl = false;
-            }
+            sheetsUrl = localStorage.getItem(SPREADSHEET_WEBAPP_URL_KEY) || "";
+            isSheetsMode = sheetsUrl !== "";
+
+            // Isi nilai input konfigurasi jika pernah disimpan sebelumnya
+            const inputEl = document.getElementById('sheets-url-input');
+            if (inputEl) inputEl.value = sheetsUrl;
 
             updateSyncStatusUI();
 
             if (isSheetsMode) {
-                // Set initial status to "Connecting"
-                const badge = document.getElementById('sync-status-badge');
-                if (badge) {
-                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-yellow-500 rounded-full animate-bounce"></span> Menghubungkan Cloud...`;
-                    badge.className = "text-xs bg-yellow-950 px-3 py-1.5 rounded-full text-yellow-300 font-semibold border border-yellow-800 flex items-center gap-1.5";
-                }
                 await fetchFromSheets();
             } else {
+                // Gunakan mode penyimpanan lokal peramban (Offline Fallback)
                 const savedState = localStorage.getItem('disdikpora_db');
                 const todayStr = getTodayString();
 
@@ -776,61 +574,82 @@
                         resetDailyCounters();
                     }
                 } else {
-                    seedDatabase();
+                    state.lastResetDate = todayStr;
                 }
             }
-            saveStateToStorage(false); // Init state silently without dispatch cycle
+            saveStateToStorage(false);
 
-            // Poll Google Sheets Web App for changes
+            // Jalankan siklus sinkronisasi terus-menerus ke Google Sheets Cloud setiap 4 detik
             if (isSheetsMode) {
-                setInterval(fetchFromSheets, 4000); // Polling every 4 seconds
+                setInterval(fetchFromSheets, 4000);
             }
         }
 
-        // FETCH DATA FROM GOOGLE SHEETS
+        // AMBIL DATA DARI GOOGLE SHEETS CLOUD (GET)
         async function fetchFromSheets() {
             if (!isSheetsMode || !sheetsUrl) return;
             try {
-                // PENGGUNAAN FETCH MURNI TANPA CUSTOM HEADER (Mencegah Preflight & Blokir CORS)
-                const response = await fetch(`${sheetsUrl}?action=getState`);
-                
-                if (!response.ok) throw new Error("Respons HTTP gagal: " + response.status);
-                
+                // Panggil endpoint doGet Apps Script tanpa header khusus (Menghindari gangguan CORS)
+                const response = await fetch(`${sheetsUrl}?action=getState`, {
+                    method: 'GET',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error("Respons jaringan tidak OK");
                 const data = await response.json();
+
                 if (data && data.queues) {
                     const oldActiveCalls = { ...state.activeCalls };
                     state = data;
                     localStorage.setItem('disdikpora_db', JSON.stringify(state));
 
-                    // Real-time voice triggering if TV display is active
+                    // JIKA MODE TV DISPLAY AKTIF: Periksa apakah ada panggilan baru untuk mengeluarkan bel & audio
                     if (state.currentView === 'tv') {
                         for (let i = 1; i <= 6; i++) {
-                            if (state.activeCalls[i] && state.activeCalls[i] !== oldActiveCalls[i]) {
-                                const q = state.queues.find(queue => queue.code_antrian === state.activeCalls[i]);
+                            const activeVal = state.activeCalls[i];
+                            if (activeVal && activeVal !== lastAnnouncedTickets[i]) {
+                                const q = state.queues.find(queue => queue.code_antrian === activeVal);
                                 if (q && q.status === 'DIPANGGIL') {
-                                    triggerVoiceCall(state.activeCalls[i], i, BIDANG_MAPPING[q.bidang].name);
+                                    lastAnnouncedTickets[i] = activeVal;
+                                    triggerVoiceCall(activeVal, i, BIDANG_MAPPING[q.bidang].name);
                                 }
                             }
                         }
                     }
 
-                    // Hubungkan Berhasil (Set UI Hijau)
                     setDatabaseConnectedStatus(true);
-
-                    // Dynamically refresh current active view
-                    if (state.currentView === 'tv') renderTVDisplay();
-                    if (state.currentView === 'operator') renderOperatorConsole();
-                    if (state.currentView === 'admin') updateDashboardUI();
+                    refreshActiveViewUI();
                 }
             } catch (e) {
-                console.error("Gagal sinkronisasi Google Sheets:", e);
-                // Hubungkan Gagal (Set UI Merah Kedip)
+                console.error("Gagal sinkronisasi dari Google Sheets:", e);
                 setDatabaseConnectedStatus(false, e.message);
             }
         }
 
-        // SET REALTIME CONNECTION BADGE LOOK
-        function setDatabaseConnectedStatus(success, errorMessage = "") {
+        // KIRIM DATA KE GOOGLE SHEETS CLOUD (POST)
+        async function saveStateToStorage(pushToSheets = true) {
+            localStorage.setItem('disdikpora_db', JSON.stringify(state));
+            channel.postMessage({ type: 'STATE_UPDATED', state: state });
+
+            // Kirim paket JSON murni menggunakan mode 'no-cors' agar selalu diizinkan oleh peramban
+            if (isSheetsMode && sheetsUrl && pushToSheets) {
+                try {
+                    await fetch(sheetsUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: JSON.stringify({ action: 'saveState', state: state })
+                    });
+                } catch (e) {
+                    console.error("Gagal menyimpan data ke Cloud:", e);
+                }
+            }
+        }
+
+        // PENYETELAN BADGE SYNC STATUS
+        function setDatabaseConnectedStatus(success, errDetail = "") {
             const badge = document.getElementById('sync-status-badge');
             if (!badge) return;
 
@@ -838,144 +657,58 @@
                 badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span> Mode: Google Sheets (Cloud)`;
                 badge.className = "text-xs bg-emerald-950 px-3 py-1.5 rounded-full text-emerald-300 font-semibold border border-emerald-800 flex items-center gap-1.5";
                 badge.onclick = null;
-                badge.title = "Koneksi Cloud ke Google Sheets aktif dan sinkron.";
             } else {
                 badge.innerHTML = `<span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-ping"></span> KONEKSI ERROR!`;
                 badge.className = "text-xs bg-rose-950 px-3 py-1.5 rounded-full text-rose-300 font-bold border border-rose-800 flex items-center gap-1.5 cursor-pointer animate-pulse";
-                badge.title = "Gagal terhubung ke Google Sheets. Klik untuk detail bantuan.";
                 badge.onclick = function() {
                     showAlert(
-                        "Integrasi Cloud Terganggu", 
-                        "Aplikasi tidak dapat menjangkau server Google Sheets Anda.\n\n" +
-                        "LANGKAH PERBAIKAN:\n" +
-                        "1. Periksa apakah SPREADSHEET_WEBAPP_URL di baris 462 sudah Anda ganti dengan URL Web App Apps Script Anda.\n" +
-                        "2. Pastikan Google Apps Script Anda sudah di-deploy dengan pengaturan Execute As: 'Me' (Saya) dan Who Has Access: 'Anyone' (Semua Orang/Anonymous).\n" +
-                        "3. Jika baru mengubah kode Apps Script, Anda wajib men-deploy ulang dengan versi baru (New Deployment).\n\n" +
-                        "Detail Teknis: " + errorMessage
+                        "Gagal Hubungkan Google Sheets",
+                        "Aplikasi tidak dapat menjangkau server Google Apps Script Anda.\n\nDetail: " + errDetail
                     );
                 };
             }
         }
 
-        function seedDatabase() {
-            const today = getTodayString();
-            state.lastResetDate = today;
-            state.dailyCounter = { P: 5, S: 10, M: 8, G: 12, O: 4, T: 6 };
-            state.activeCalls = { 1: "P004", 2: "S009", 3: "M007", 4: "G011", 5: "O003", 6: "T005" };
-            
-            const fields = ['PAUDDIKMAS', 'SD', 'SMP', 'GTK', 'PORA', 'SEKRETARIAT'];
-            const prefixes = { 'PAUDDIKMAS': 'P', 'SD': 'S', 'SMP': 'M', 'GTK': 'G', 'PORA': 'O', 'SEKRETARIAT': 'T' };
-
-            for (let f of fields) {
-                const count = state.dailyCounter[prefixes[f]];
-                const loketId = BIDANG_MAPPING[f].loket;
-                for (let i = 0; i < count; i++) {
-                    const ticketCode = `${prefixes[f]}${String(i).padStart(3, '0')}`;
-                    let status = 'SELESAI';
-                    if (ticketCode === state.activeCalls[loketId]) {
-                        status = 'DIPANGGIL';
-                    } else if (i === count - 1) {
-                        status = 'MENUNGGU';
-                    }
-
-                    state.queues.push({
-                        id: Date.now() - (1000 * 60 * 60 * (count - i)),
-                        code_antrian: ticketCode,
-                        bidang: f,
-                        loket: loketId,
-                        tanggal: today,
-                        jam_ambil: `08:${20 + i}:10`,
-                        jam_panggil: status !== 'MENUNGGU' ? `08:${35 + i}:15` : null,
-                        jam_selesai: status === 'SELESAI' ? `08:${50 + i}:00` : null,
-                        status: status
-                    });
-                }
-            }
-        }
-
-        function resetDailyCounters() {
-            state.dailyCounter = { P: 0, S: 0, M: 0, G: 0, O: 0, T: 0 };
-            state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
-            state.queues.forEach(q => {
-                if (q.status === 'MENUNGGU' || q.status === 'DIPANGGIL' || q.status === 'DILAYANI') {
-                    q.status = 'DILEWATI';
-                }
-            });
-            state.lastResetDate = getTodayString();
-            saveStateToStorage();
-        }
-
-        async function saveStateToStorage(pushToSheets = true) {
-            localStorage.setItem('disdikpora_db', JSON.stringify(state));
-            channel.postMessage({ type: 'STATE_UPDATED', state: state });
-            updateDashboardUI();
-
-            // PUSH DATA KE SPREADSHEET MENGGUNAKAN SKEMA "FAIL-SAFE NO-CORS"
-            if (isSheetsMode && sheetsUrl && pushToSheets) {
-                try {
-                    await fetch(sheetsUrl, {
-                        method: 'POST',
-                        mode: 'no-cors', // Menghindari Preflight OPTIONS Check secara mutlak
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8'
-                        },
-                        body: JSON.stringify({ action: 'saveState', state: state })
-                    });
-                } catch (e) {
-                    console.error("Gagal mengirim data ke Google Sheets:", e);
-                }
-            }
-        }
-
-        // SAVE CONNECTION CONFIGURATION MANUAL OVERRIDE (Fallback saja, biasanya tidak digunakan jika URL sudah hardcoded)
-        function saveSheetsConnection() {
-            const inputVal = document.getElementById('sheets-url-input') ? document.getElementById('sheets-url-input').value.trim() : "";
-            if (inputVal === "") {
-                localStorage.removeItem('disdikpora_sheets_url');
-                showAlert('Konfigurasi Disimpan', 'Mode Google Sheets manual dinonaktifkan.');
-            } else {
-                localStorage.setItem('disdikpora_sheets_url', inputVal);
-                showAlert('Konfigurasi Disimpan', 'Sistem berhasil dihubungkan ke spreadsheet secara manual!');
-            }
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
-        }
-
         function updateSyncStatusUI() {
             const badge = document.getElementById('sync-status-badge');
-            if (isSheetsMode) {
-                // Diperbarui secara dinamis oleh fetchFromSheets()
-            } else {
-                if (badge) {
-                    badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Offline/LAN`;
-                    badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
-                    badge.onclick = null;
-                }
+            if (!isSheetsMode && badge) {
+                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode: Lokal Offline`;
+                badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
             }
         }
 
-        // Broadcaster listener
+        function refreshActiveViewUI() {
+            if (state.currentView === 'tv') renderTVDisplay();
+            if (state.currentView === 'operator') renderOperatorConsole();
+        }
+
+        // PENYIMPANAN KONFIGURASI LINK SECURA MANUAL
+        function saveSheetsConnection() {
+            const inputVal = document.getElementById('sheets-url-input').value.trim();
+            if (inputVal === "") {
+                localStorage.removeItem(SPREADSHEET_WEBAPP_URL_KEY);
+                showAlert('Berhasil', 'Menonaktifkan sinkronisasi cloud Google Sheets.');
+            } else {
+                localStorage.setItem(SPREADSHEET_WEBAPP_URL_KEY, inputVal);
+                showAlert('Berhasil', 'Konfigurasi Google Sheets berhasil disimpan.');
+            }
+            setTimeout(() => { window.location.reload(); }, 1500);
+        }
+
+        // LISTENER UPDATE STATE LOKAL ANTAR-TAB
         channel.onmessage = function(event) {
             if (event.data && event.data.type === 'STATE_UPDATED') {
                 state = event.data.state;
-                updateDashboardUI();
-                renderOperatorConsole();
-                renderTVDisplay();
-            } else if (event.data && event.data.type === 'CALL_TICKET_ANNOUNCEMENT') {
-                if (state.currentView === 'tv') {
-                    triggerVoiceCall(event.data.ticket, event.data.loket, event.data.bidang);
-                }
+                refreshActiveViewUI();
             }
         };
 
-        // VIEW ROUTING
+        // VIEW NAVIGATION
         function goToView(viewId) {
             document.getElementById('view-launcher').classList.add('hidden');
             document.getElementById('view-kiosk').classList.add('hidden');
             document.getElementById('view-tv').classList.add('hidden');
             document.getElementById('view-operator').classList.add('hidden');
-            document.getElementById('view-admin').classList.add('hidden');
             document.getElementById('global-header').classList.remove('hidden');
             document.getElementById('back-to-launcher-btn').classList.remove('hidden');
 
@@ -990,22 +723,15 @@
             } else if (viewId === 'tv') {
                 document.getElementById('view-tv').classList.remove('hidden');
                 document.getElementById('global-header').classList.add('hidden');
+                checkAudioPermission();
                 renderTVDisplay();
             } else if (viewId === 'operator') {
                 document.getElementById('view-operator').classList.remove('hidden');
                 renderOperatorConsole();
-            } else if (viewId === 'admin') {
-                document.getElementById('view-admin').classList.remove('hidden');
-                renderAdminDashboard();
             }
         }
 
-        function openInNewTab(viewId) {
-            const currentUrl = window.location.href.split('?')[0];
-            window.open(`${currentUrl}?view=${viewId}`, '_blank');
-        }
-
-        // TICKET KIOSK LOGIC
+        // TANGANI PEMBUATAN TIKET BARU (KIOS)
         function createTicket(bidangName) {
             const config = BIDANG_MAPPING[bidangName];
             if (!config) return;
@@ -1041,7 +767,7 @@
             document.getElementById('thermal-printer-modal').classList.remove('hidden');
         }
 
-        // OPERATOR LOKET CONSOLE LOGIC
+        // OPERATOR LOKET PANEL LOGIC
         function renderOperatorConsole() {
             if (!state.operatorSession) {
                 document.getElementById('operator-login-panel').classList.remove('hidden');
@@ -1142,7 +868,7 @@
 
             if (actionType === 'NEXT') {
                 if (activeRecord && (activeRecord.status === 'DIPANGGIL' || activeRecord.status === 'DILAYANI')) {
-                    showAlert('Peringatan', 'Selesaikan atau lewati dulu antrian saat ini sebelum memanggil antrian berikutnya.');
+                    showAlert('Peringatan', 'Selesaikan atau lewati terlebih dahulu antrian saat ini sebelum memanggil nomor berikutnya.');
                     return;
                 }
 
@@ -1151,7 +877,7 @@
                     .sort((a,b) => a.id - b.id)[0];
 
                 if (!nextQueue) {
-                    showAlert('Antrian Kosong', `Tidak ada antrian yang menunggu untuk bidang ${mapping.name}.`);
+                    showAlert('Selesai', `Seluruh antrian bidang ${mapping.name} telah dilayani.`);
                     return;
                 }
 
@@ -1163,28 +889,16 @@
                 saveStateToStorage();
                 renderOperatorConsole();
 
-                channel.postMessage({
-                    type: 'CALL_TICKET_ANNOUNCEMENT',
-                    ticket: nextQueue.code_antrian,
-                    loket: loketId,
-                    bidang: mapping.name
-                });
-
             } else if (actionType === 'RECALL') {
                 if (!activeRecord) {
-                    showAlert('Perhatian', 'Tidak ada antrian aktif yang sedang dilayani untuk dipanggil ulang.');
+                    showAlert('Perhatian', 'Tidak ada antrian aktif yang dilayani untuk dipanggil ulang.');
                     return;
                 }
                 activeRecord.status = 'DIPANGGIL';
+                // Reset cache announced agar TV mau membunyikan ulang
+                lastAnnouncedTickets[loketId] = null;
                 saveStateToStorage();
                 renderOperatorConsole();
-
-                channel.postMessage({
-                    type: 'CALL_TICKET_ANNOUNCEMENT',
-                    ticket: activeRecord.code_antrian,
-                    loket: loketId,
-                    bidang: mapping.name
-                });
 
             } else if (actionType === 'SKIP') {
                 if (!activeRecord) {
@@ -1199,7 +913,7 @@
 
             } else if (actionType === 'DONE') {
                 if (!activeRecord) {
-                    showAlert('Perhatian', 'Tidak ada antrian aktif yang sedang dilayani.');
+                    showAlert('Perhatian', 'Tidak ada antrian aktif untuk disimpan.');
                     return;
                 }
                 activeRecord.status = 'SELESAI';
@@ -1210,27 +924,23 @@
             }
         }
 
-        // TV QUEUE MONITOR SCREEN DISPLAY
+        // TV MONITOR SCREEN DRAWING
         function renderTVDisplay() {
-            setInterval(() => {
-                const now = new Date();
-                const clockEl = document.getElementById('tv-digital-clock');
-                const dateEl = document.getElementById('tv-digital-date');
-                if (clockEl) clockEl.innerText = now.toLocaleTimeString('id-ID');
-                if (dateEl) {
-                    dateEl.innerText = now.toLocaleDateString('id-ID', {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                    });
-                }
-            }, 1000);
+            // Jam Digital TV
+            const now = new Date();
+            const clockEl = document.getElementById('tv-digital-clock');
+            const dateEl = document.getElementById('tv-digital-date');
+            if (clockEl) clockEl.innerText = now.toLocaleTimeString('id-ID');
+            if (dateEl) {
+                dateEl.innerText = now.toLocaleDateString('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
 
-            const calledTickets = state.queues.filter(q => q.status === 'DIPANGGIL').sort((a,b) => {
-                return b.id - a.id;
-            });
-
+            const calledTickets = state.queues.filter(q => q.status === 'DIPANGGIL').sort((a,b) => b.id - a.id);
             const mainCall = calledTickets[0];
 
             if (mainCall) {
@@ -1246,6 +956,7 @@
                 document.getElementById('tv-active-destination').innerText = `Silakan menunggu antrian dipanggil`;
             }
 
+            // Update status per-loket
             for (let i = 1; i <= 6; i++) {
                 const activeVal = state.activeCalls[i];
                 const boxEl = document.getElementById(`tv-loket-box-${i}`);
@@ -1261,28 +972,66 @@
             }
         }
 
-        // AUDIO SPEECH GENERATION
+        // PEMUTARAN AUDIO BEL & SUARA ROBOT (TV DISPLAY)
         function triggerVoiceCall(ticketCode, loketNumber, bidangName) {
             const ring = document.getElementById('tv-pulse-glow');
             if (ring) {
                 ring.classList.remove('hidden');
-                setTimeout(() => ring.classList.add('hidden'), 12000);
+                setTimeout(() => ring.classList.add('hidden'), 10000);
             }
 
-            const chime = document.getElementById('audio-chime');
-            if (chime) {
-                chime.currentTime = 0;
-                chime.play().then(() => {
-                    setTimeout(() => {
-                        speakIndonesianQueue(ticketCode, loketNumber, bidangName);
-                    }, 1200);
-                }).catch(err => {
-                    speakIndonesianQueue(ticketCode, loketNumber, bidangName);
-                });
-            }
+            // Bunyikan bel terlebih dahulu sebelum robot berbicara
+            playCounterChime().then(() => {
+                setTimeout(() => {
+                    speakVoiceSynthesizer(ticketCode, loketNumber, bidangName);
+                }, 800);
+            });
         }
 
-        function speakIndonesianQueue(ticketCode, loketNumber, bidangName) {
+        // BEL COUNTER (SINTETIS DAN MANDIRI TANPA FILE LUAR)
+        function playCounterChime() {
+            return new Promise((resolve) => {
+                try {
+                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    
+                    // Nada Pertama (Ting)
+                    const osc1 = audioCtx.createOscillator();
+                    const gain1 = audioCtx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    gain1.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gain1.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    osc1.connect(gain1);
+                    gain1.connect(audioCtx.destination);
+                    osc1.start();
+                    osc1.stop(audioCtx.currentTime + 0.6);
+                    
+                    // Nada Kedua (Tong)
+                    setTimeout(() => {
+                        const osc2 = audioCtx.createOscillator();
+                        const gain2 = audioCtx.createGain();
+                        osc2.type = 'sine';
+                        osc2.frequency.setValueAtTime(392.00, audioCtx.currentTime); // G4
+                        gain2.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                        gain2.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.8);
+                        osc2.connect(gain2);
+                        gain2.connect(audioCtx.destination);
+                        osc2.start();
+                        osc2.stop(audioCtx.currentTime + 0.8);
+                        
+                        setTimeout(() => { resolve(); }, 800);
+                    }, 300);
+                } catch (e) {
+                    console.warn("Audio Context diblokir atau gagal:", e);
+                    resolve(); // Tetap jalan jika terjadi pemblokiran peramban
+                }
+            });
+        }
+
+        function speakVoiceSynthesizer(ticketCode, loketNumber, bidangName) {
             if (!('speechSynthesis' in window)) return;
 
             const letter = ticketCode.charAt(0);
@@ -1308,180 +1057,47 @@
             const textToSpeak = `Nomor antrian, ${speltLetter} ${speltDigits}, silakan menuju loket ${speltLoket}, bidang ${bidangName}.`;
 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
-            textToSpeak.toLowerCase();
             utterance.lang = 'id-ID';
-            utterance.rate = 0.85;
+            utterance.rate = 0.85; // Sedikit santai agar jernih terdengar
             utterance.pitch = 1.0;
 
             const voices = window.speechSynthesis.getVoices();
             const indonesianVoice = voices.find(v => v.lang.startsWith('id') || v.name.includes('Indonesian'));
-            if (indonesianVoice) {
-                utterance.voice = indonesianVoice;
-            }
+            if (indonesianVoice) utterance.voice = indonesianVoice;
 
             window.speechSynthesis.speak(utterance);
         }
 
-        // ADMIN PANEL & GRAPHICS
-        let adminChart = null;
-        function renderAdminDashboard() {
-            if (!localStorage.getItem('disdikpora_admin_session')) {
-                document.getElementById('admin-login-panel').classList.remove('hidden');
-                document.getElementById('admin-dashboard-panel').classList.add('hidden');
-                return;
-            }
-
-            document.getElementById('admin-login-panel').classList.add('hidden');
-            document.getElementById('admin-dashboard-panel').classList.remove('hidden');
-
-            updateDashboardUI();
-        }
-
-        function loginAdmin() {
-            const pw = document.getElementById('admin-password').value;
-            if (pw === 'admin123') {
-                localStorage.setItem('disdikpora_admin_session', 'true');
-                document.getElementById('admin-login-error').classList.add('hidden');
-                renderAdminDashboard();
-            } else {
-                document.getElementById('admin-login-error').classList.remove('hidden');
-            }
-        }
-
-        function updateDashboardUI() {
-            if (state.currentView !== 'admin') return;
-
-            const todayStr = getTodayString();
-            const todayQueues = state.queues.filter(q => q.tanggal === todayStr);
-
-            const total = todayQueues.length;
-            const waiting = todayQueues.filter(q => q.status === 'MENUNGGU').length;
-            const serving = todayQueues.filter(q => q.status === 'DIPANGGIL' || q.status === 'DILAYANI').length;
-            const completed = todayQueues.filter(q => q.status === 'SELESAI').length;
-
-            document.getElementById('stat-total').innerText = total;
-            document.getElementById('stat-waiting').innerText = waiting;
-            document.getElementById('stat-serving').innerText = serving;
-            document.getElementById('stat-completed').innerText = completed;
-
-            const pCount = todayQueues.filter(q => q.bidang === 'PAUDDIKMAS').length;
-            const sCount = todayQueues.filter(q => q.bidang === 'SD').length;
-            const mCount = todayQueues.filter(q => q.bidang === 'SMP').length;
-            const gCount = todayQueues.filter(q => q.bidang === 'GTK').length;
-            const oCount = todayQueues.filter(q => q.bidang === 'PORA').length;
-            const tCount = todayQueues.filter(q => q.bidang === 'SEKRETARIAT').length;
-
-            document.getElementById('stat-p').innerText = pCount;
-            document.getElementById('stat-s').innerText = sCount;
-            document.getElementById('stat-m').innerText = mCount;
-            document.getElementById('stat-g').innerText = gCount;
-            document.getElementById('stat-o').innerText = oCount;
-            document.getElementById('stat-t').innerText = tCount;
-
-            const tableBody = document.getElementById('admin-table-body');
-            tableBody.innerHTML = '';
-            
-            const sortedQueues = [...state.queues].sort((a,b) => b.id - a.id);
-            if (sortedQueues.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-slate-400 font-medium">Belum ada aktivitas pelayanan terekam hari ini.</td></tr>`;
-            } else {
-                sortedQueues.forEach(q => {
-                    const tr = document.createElement('tr');
-                    tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
-                    
-                    let badgeClass = 'bg-slate-100 text-slate-600';
-                    if (q.status === 'MENUNGGU') badgeClass = 'bg-amber-100 text-amber-700 font-semibold border border-amber-200';
-                    if (q.status === 'DIPANGGIL') badgeClass = 'bg-orange-100 text-orange-700 font-semibold border border-orange-200 animate-pulse';
-                    if (q.status === 'DILAYANI') badgeClass = 'bg-blue-100 text-blue-700 font-semibold border border-blue-200';
-                    if (q.status === 'SELESAI') badgeClass = 'bg-emerald-100 text-emerald-700 font-semibold border border-emerald-200';
-                    if (q.status === 'DILEWATI') badgeClass = 'bg-rose-100 text-rose-700 font-semibold border border-rose-200';
-
-                    tr.innerHTML = `
-                        <td class="p-3 font-bold font-mono text-slate-900">${q.code_antrian}</td>
-                        <td class="p-3 font-medium">${q.bidang}</td>
-                        <td class="p-3 font-semibold text-slate-600">${q.loket ? 'Loket ' + q.loket : '--'}</td>
-                        <td class="p-3 text-slate-500 font-mono">${q.jam_ambil}</td>
-                        <td class="p-3 text-slate-500 font-mono">${q.jam_panggil || '--'}</td>
-                        <td class="p-3 text-slate-500 font-mono">${q.jam_selesai || '--'}</td>
-                        <td class="p-3"><span class="text-[10px] uppercase px-2.5 py-0.5 rounded-full ${badgeClass}">${q.status}</span></td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            }
-
-            renderChart(pCount, sCount, mCount, gCount, oCount, tCount);
-        }
-
-        function renderChart(p, s, m, g, o, t) {
-            const ctx = document.getElementById('admin-chart-canvas');
-            if (!ctx) return;
-
-            if (adminChart) adminChart.destroy();
-
-            adminChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['PAUDDIKMAS', 'SD', 'SMP', 'GTK', 'PORA', 'SEKRETARIAT'],
-                    datasets: [{
-                        label: 'Total Kunjungan Layanan',
-                        data: [p, s, m, g, o, t],
-                        backgroundColor: [
-                            'rgba(59, 130, 246, 0.75)', 'rgba(16, 185, 129, 0.75)',
-                            'rgba(139, 92, 246, 0.75)', 'rgba(245, 158, 11, 0.75)',
-                            'rgba(6, 182, 212, 0.75)', 'rgba(244, 63, 94, 0.75)'
-                        ],
-                        borderColor: [
-                            'rgb(59, 130, 246)', 'rgb(16, 185, 129)',
-                            'rgb(139, 92, 246)', 'rgb(245, 158, 11)',
-                            'rgb(6, 182, 212)', 'rgb(244, 63, 94)'
-                        ],
-                        borderWidth: 1.5,
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1, color: '#94a3b8' } },
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { weight: 'bold' } } }
-                    }
+        // PENANGANAN IZIN AUDIO CONTEXT PERAMBAN
+        function checkAudioPermission() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if (audioCtx.state === 'suspended') {
+                    document.getElementById('tv-audio-notif').classList.remove('hidden');
+                    document.getElementById('tv-audio-active-badge').classList.add('hidden');
+                } else {
+                    document.getElementById('tv-audio-notif').classList.add('hidden');
+                    document.getElementById('tv-audio-active-badge').classList.remove('hidden');
                 }
-            });
-        }
-
-        function confirmReset() {
-            if (confirm('Apakah Anda yakin ingin menyetel ulang counter antrian hari ini? Tindakan ini akan mengembalikan urutan ke nomor 000 untuk semua bidang.')) {
-                resetDailyCounters();
-                updateDashboardUI();
-                showAlert('Reset Berhasil', 'Seluruh counter antrian berhasil disetel ulang ke nomor 000.');
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        // REPORT MOCK EXPORTS
-        function exportToExcel() {
-            let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "Kode Antrian,Bidang,Loket,Tanggal,Jam Ambil,Jam Panggil,Jam Selesai,Status\n";
-            
-            state.queues.forEach(q => {
-                csvContent += `${q.code_antrian},${q.bidang},${q.loket || '--'},${q.tanggal},${q.jam_ambil},${q.jam_panggil || '--'},${q.jam_selesai || '--'},${q.status}\n`;
-            });
-
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `laporan_antrian_${getTodayString()}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+        function enableAudioContext() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                audioCtx.resume().then(() => {
+                    document.getElementById('tv-audio-notif').classList.add('hidden');
+                    document.getElementById('tv-audio-active-badge').classList.remove('hidden');
+                    playCounterChime(); // Tes bel pertama
+                });
+            } catch (e) {
+                console.error(e);
+            }
         }
 
-        function exportToPDF() {
-            window.print();
-        }
-
-        // UTILITY FUNCTIONS
+        // UTILITY SYSTEM
         function getTodayString() {
             const d = new Date();
             const year = d.getFullYear();
@@ -1497,6 +1113,18 @@
             return null;
         }
 
+        function resetDailyCounters() {
+            state.dailyCounter = { P: 0, S: 0, M: 0, G: 0, O: 0, T: 0 };
+            state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+            state.queues.forEach(q => {
+                if (q.status === 'MENUNGGU' || q.status === 'DIPANGGIL') {
+                    q.status = 'DILEWATI';
+                }
+            });
+            state.lastResetDate = getTodayString();
+        }
+
+        // UTILITY POPUP
         function showAlert(title, text) {
             const modal = document.getElementById('custom-alert-modal');
             document.getElementById('alert-title').innerText = title;
@@ -1504,6 +1132,7 @@
             modal.classList.remove('hidden');
         }
 
+        // BOOTING UP SYSTEM
         window.onload = function() {
             initDatabase();
 
@@ -1516,6 +1145,14 @@
                 goToView('launcher');
             }
         };
+
+        // Trigger loading voices agar Web Speech siap
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
+            window.speechSynthesis.onvoiceschanged = function() {
+                window.speechSynthesis.getVoices();
+            };
+        }
     </script>
 </body>
 </html>
