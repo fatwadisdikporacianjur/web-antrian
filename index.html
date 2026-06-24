@@ -535,6 +535,7 @@
             lastResetDate: ""
         };
 
+        <!-- ... existing code ... -->
         // PEMETAAN DATA BIDANG DAN LOKET
         const BIDANG_MAPPING = {
             'PAUDDIKMAS': { prefix: 'P', loket: 1, name: 'PAUDDIKMAS' },
@@ -545,14 +546,16 @@
             'SEKRETARIAT': { prefix: 'T', loket: 6, name: 'Sekretariat' }
         };
 
-        const SPREADSHEET_WEBAPP_URL_KEY = 'https://script.google.com/macros/s/AKfycbyVAy4e4g5G2_VBtU4RZo_P3zaZNfdqngVlRx07gRLsPUnl3_YTjV14lCqkGyS-0E8d/exec';
-        let sheetsUrl = "";
-        let isSheetsMode = false;
+        const SPREADSHEET_WEBAPP_URL_KEY = 'disdikpora_sheets_url';
+        let sheetsUrl = "https://script.google.com/macros/s/AKfycbyVAy4e4g5G2_VBtU4RZo_P3zaZNfdqngVlRx07gRLsPUnl3_Ytjv14lCqkGyS-0E8d/exec";
+        let isSheetsMode = true;
         let lastAnnouncedTickets = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
 
         // INITIALIZE DATABASE
         async function initDatabase() {
-            sheetsUrl = localStorage.getItem(SPREADSHEET_WEBAPP_URL_KEY) || "";
+            if (!sheetsUrl || sheetsUrl === "") {
+                sheetsUrl = localStorage.getItem(SPREADSHEET_WEBAPP_URL_KEY) || "";
+            }
             isSheetsMode = sheetsUrl !== "";
 
             // Isi nilai input konfigurasi jika pernah disimpan sebelumnya
