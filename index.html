@@ -13,27 +13,58 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        /* Printing Layout Optimization */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #print-receipt-ticket, #print-receipt-ticket * {
-                visibility: visible;
-            }
-            #print-receipt-ticket {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                max-width: 58mm;
-                max-height: 80mm;
-                padding: 10px;
-                margin: 0;
-                background: white;
-                color: black;
-                font-family: monospace;
-            }
+/* Perbaikan Layout Cetak Printer Thermal 58mm */
+@media print {
+    /* Atur ukuran kertas spesifik printer thermal */
+    @page {
+        size: 58mm auto;
+        margin: 0;
+    }
+    
+    /* Sembunyikan seluruh isi web secara total agar tidak memakan space */
+    body {
+        background: white;
+        color: black;
+        padding: 0;
+        margin: 0;
+    }
+    
+    body > *:not(#thermal-printer-modal) {
+        display: none !important;
+    }
+    
+    #view-launcher, #view-kiosk, #view-tv, #view-operator, header, footer {
+        display: none !important;
+    }
+
+    /* Tampilkan modal printer dan struk secara presisi */
+    #thermal-printer-modal {
+        position: static !important;
+        display: block !important;
+        background: transparent !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* Tombol cetak di dalam modal harus disembunyikan saat kertas keluar */
+    #thermal-printer-modal button, 
+    #thermal-printer-modal h4 {
+        display: none !important;
+    }
+
+    #print-receipt-ticket {
+        display: block !important;
+        width: 100% !important;
+        max-width: 58mm !important;
+        padding: 4mm !important;
+        margin: 0 auto !important;
+        border: none !important;
+        box-shadow: none !important;
+        font-family: monospace;
+        page-break-inside: avoid;
+    }
+}
         }
     </style>
 </head>
