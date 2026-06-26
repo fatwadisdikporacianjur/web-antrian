@@ -1083,47 +1083,63 @@
             });
         }
  
+// SINTESIS PENGUCAPAN AUDIO (RAMAH, ANGGUN & ALAMI KHAS CUSTOMER SERVICE)
         function speakQueueVoice(ticketCode, loketNumber, bidangName) {
             if (!('speechSynthesis' in window)) return;
- 
+
+            // Batalkan semua antrean suara usang agar tidak tumpang tindih
             window.speechSynthesis.cancel();
- 
+
             const letter = ticketCode.charAt(0);
-            const digits = ticketCode.substring(1).split('');
- 
-            const letterSpelling = {
-                'P': 'Pe.', 'S': 'Es.', 'M': 'Em.', 'G': 'Ge.', 'O': 'O.', 'T': 'Te.'
+            // Ambil angka setelah huruf dan ubah jadi bilangan bulat (misal: "001" jadi 1, "015" jadi 15)
+            const numberValue = parseInt(ticketCode.substring(1), 10); 
+
+            // Nama penyebutan kode huruf yang diperjelas intonasinya
+            const letterNames = {
+                'P': 'P', 'S': 'S', 'M': 'M', 'G': 'G', 'O': 'O', 'T': 'T'
             };
- 
-            const digitSpelling = {
-                '0': 'kosong', '1': 'satu', '2': 'dua', '3': 'tiga', '4': 'empat',
-                '5': 'lima', '6': 'enam', '7': 'tujuh', '8': 'delapan', '9': 'sembilan'
-            };
- 
-            const speltLetter = letterSpelling[letter] || letter;
-            const speltDigits = digits.map(d => digitSpelling[d] || d).join('... ');
- 
+            const spokenLetter = letterNames[letter] || letter;
+
+            // Konversi nomor loket ke teks terbilang Indonesia
             const counterWords = {
-                1: 'satu', 2: 'dua', 3: 'tiga', 4: 'empat', 5: 'lima', 6: 'enam'
+                1: 'Satu', 2: 'Dua', 3: 'Tiga', 4: 'Empat', 5: 'Lima', 6: 'Enam'
             };
-            const speltLoket = counterWords[loketNumber] || loketNumber;
- 
-            const textToSpeak = `Nomor antrean... ${speltLetter}... ${speltDigits}... silakan menuju ke loket ${speltLoket}... bidang ${bidangName}. Terima kasih.`;
- 
+            const spokenLoket = counterWords[loketNumber] || loketNumber;
+
+            // Pembersihan nama bidang agar saat diucapkan mengalir enak didengar
+            let formattedBidang = bidangName;
+            if (bidangName.toLowerCase() === 'sekretariat') {
+                formattedBidang = 'Bagian Sekretariat';
+            } else {
+                formattedBidang = 'Bidang ' + bidangName;
+            }
+
+            // [STRUKTUR KALIMAT ALAMI] Menggunakan koma (,) untuk jeda napas yang pas dan sopan
+            const textToSpeak = `Nomor antrean, ${spokenLetter}, ${numberValue}. Silakan menuju, ke Loket ${spokenLoket}, di ${formattedBidang}. Terima kasih.`;
+
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'id-ID';
-            utterance.rate = 0.78; 
-            utterance.pitch = 1.1;   
- 
+            
+            // PARAMETER KUNCI SUARA WANITA LEMBUT:
+            utterance.rate = 0.83;   // Sedikit diperlambat dari normal agar berwibawa dan anggun
+            utterance.pitch = 1.15;  // Nada dinaikkan sedikit agar terdengar ramah, ceria, dan feminin
+
+            // Cari database suara bawaan sistem perangkat
             const voices = window.speechSynthesis.getVoices();
-            const indonesianVoice = voices.find(v => v.lang.startsWith('id') || v.name.includes('Indonesian') || v.name.includes('Gadis') || v.name.includes('Andika'));
+            
+            // Cari engine suara wanita Indonesia terbaik (Gadis/ID-ID-Natural/Microsoft Denisa)
+            const indonesianVoice = voices.find(v => 
+                (v.lang.startsWith('id') || v.name.includes('Indonesian')) && 
+                (v.name.toLowerCase().includes('gadis') || v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'))
+            ) || voices.find(v => v.lang.startsWith('id')); // Fallback ke bahasa Indonesia apa saja jika tidak ketemu yang spesifik perempuan
+
             if (indonesianVoice) {
                 utterance.voice = indonesianVoice;
             }
- 
+
             window.speechSynthesis.speak(utterance);
         }
- 
+        
         function checkAudioPermission() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
