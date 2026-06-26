@@ -4,62 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Antrian - Disdikpora Kabupaten Cianjur</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700;800&display=swap');
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        /* Perbaikan Layout Cetak Printer Thermal 58mm */
+        /* Printing Layout Optimization */
         @media print {
-            @page {
-                size: 58mm auto;
-                margin: 0;
+            body * {
+                visibility: hidden;
             }
-            body {
-                background: white;
-                color: black;
-                padding: 0;
-                margin: 0;
-            }
-            body > *:not(#thermal-printer-modal) {
-                display: none !important;
-            }
-            #view-launcher, #view-kiosk, #view-tv, #view-operator, header, footer {
-                display: none !important;
-            }
-            #thermal-printer-modal {
-                position: static !important;
-                display: block !important;
-                background: transparent !important;
-                backdrop-filter: none !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            #thermal-printer-modal button, 
-            #thermal-printer-modal h4 {
-                display: none !important;
+            #print-receipt-ticket, #print-receipt-ticket * {
+                visibility: visible;
             }
             #print-receipt-ticket {
-                display: block !important;
-                width: 100% !important;
-                max-width: 58mm !important;
-                padding: 4mm !important;
-                margin: 0 auto !important;
-                border: none !important;
-                box-shadow: none !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 58mm;
+                padding: 10px;
+                margin: 0;
+                background: white;
+                color: black;
                 font-family: monospace;
-                page-break-inside: avoid;
             }
         }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white">
  
+    <!-- GLOBAL TOP NAVIGATION -->
     <header id="global-header" class="bg-slate-900 text-white shadow-md border-b border-slate-800">
         <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center">
             <div class="flex items-center space-x-3 cursor-pointer" onclick="goToView('launcher')">
+                <!-- Crest Logo -->
                 <svg class="w-10 h-10 text-emerald-500" viewBox="0 0 100 100" fill="currentColor">
                     <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" fill="#0f172a" stroke="currentColor" stroke-width="4"/>
                     <path d="M50,15 L80,30 L80,70 L50,85 L20,70 L20,30 Z" fill="currentColor" opacity="0.15"/>
@@ -74,6 +57,7 @@
             </div>
           
             <div class="flex items-center space-x-3 mt-2 md:mt-0">
+                <!-- Status Badge -->
                 <span id="sync-status-badge" class="text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5 cursor-pointer hover:bg-slate-700 transition-all">
                     <span class="w-2.5 h-2.5 bg-blue-500 rounded-full"></span>
                     Mengecek koneksi...
@@ -85,8 +69,10 @@
         </div>
     </header>
  
+    <!-- MAIN CONTAINERS -->
     <main class="flex-grow flex flex-col">
  
+        <!-- 1. CENTRAL LAUNCHER SCREEN -->
         <div id="view-launcher" class="container mx-auto px-4 py-8 max-w-6xl flex-grow flex flex-col justify-center">
             <div class="text-center mb-10">
                 <span class="text-emerald-600 font-bold tracking-widest text-xs uppercase px-3 py-1 bg-emerald-100 rounded-full border border-emerald-200">SISTEM ANTRIAN HYBRID MULTI-DEVICE</span>
@@ -94,7 +80,9 @@
                 <p class="text-slate-600 mt-2 max-w-2xl mx-auto text-sm md:text-base">Silakan tentukan peran komputer ini dalam jaringan pelayanan Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur.</p>
             </div>
  
+            <!-- Device Roles Selection Grid -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto w-full">
+                <!-- Role 1: Kiosk Cetak Tiket (Server) -->
                 <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-emerald-300 transition-all duration-300 group">
                     <div>
                         <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-emerald-500 group-hover:text-white transition-all duration-300 shadow-sm">
@@ -108,6 +96,7 @@
                     </div>
                 </div>
  
+                <!-- Role 2: Layar TV Display -->
                 <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-amber-300 transition-all duration-300 group">
                     <div>
                         <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-sm">
@@ -121,13 +110,14 @@
                     </div>
                 </div>
  
+                <!-- Role 3: Operator Loket Caller -->
                 <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 flex flex-col justify-between hover:shadow-2xl hover:border-blue-300 transition-all duration-300 group">
                     <div>
                         <div class="w-14 h-14 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-2xl mb-5 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 shadow-sm">
                             <i class="fa-solid fa-headset"></i>
                         </div>
                         <h3 class="text-lg font-bold text-slate-900">3. Konsol Operator Loket</h3>
-                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dijalankan di laptop masing-masing petugas loket pelayanan (Loket 1 - 6). Digunakan untuk melihat daftar antrian and memanggil nomor antrian berikutnya.</p>
+                        <p class="text-xs text-slate-500 mt-2 leading-relaxed">Dijalankan di laptop masing-masing petugas loket pelayanan (Loket 1 - 6). Digunakan untuk melihat daftar antrian dan memanggil nomor antrian berikutnya.</p>
                     </div>
                     <div class="mt-6">
                         <button onclick="goToView('operator')" class="w-full bg-slate-900 text-white font-semibold py-2.5 px-4 rounded-xl hover:bg-slate-800 transition-all text-sm">Mulai Konsol Petugas</button>
@@ -136,7 +126,9 @@
             </div>
         </div>
  
+        <!-- 2. KIOSK SCREEN (SERVER CETAK TIKET) -->
         <div id="view-kiosk" class="hidden flex-grow flex flex-col bg-slate-950 text-white">
+            <!-- Header Kiosk -->
             <div class="bg-gradient-to-r from-blue-900 to-indigo-950 py-8 px-6 text-center border-b border-indigo-900 shadow-lg relative">
                 <div class="relative flex flex-col items-center">
                     <svg class="w-16 h-16 text-yellow-400 mb-3 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
@@ -150,6 +142,7 @@
                 </div>
             </div>
  
+            <!-- Buttons Grid -->
             <div class="flex-grow container mx-auto px-4 py-8 flex flex-col justify-center max-w-5xl">
                 <div class="text-center mb-8">
                     <h3 class="text-lg md:text-xl font-bold text-slate-100">Silakan Sentuh Bidang Layanan yang Anda Tuju:</h3>
@@ -157,6 +150,7 @@
                 </div>
  
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Bidang PAUDDIKMAS -->
                     <button onclick="createTicket('PAUDDIKMAS')" class="bg-gradient-to-b from-blue-800 to-blue-950 border border-blue-700/50 hover:border-blue-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-blue-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-blue-900/60 flex items-center justify-center text-blue-400 text-lg font-bold group-hover:scale-110 transition-transform">P</div>
                         <div class="mt-3">
@@ -165,6 +159,7 @@
                         </div>
                     </button>
  
+                    <!-- Bidang SD -->
                     <button onclick="createTicket('SD')" class="bg-gradient-to-b from-emerald-800 to-emerald-950 border border-emerald-700/50 hover:border-emerald-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-emerald-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-lg font-bold group-hover:scale-110 transition-transform">S</div>
                         <div class="mt-3">
@@ -173,6 +168,7 @@
                         </div>
                     </button>
  
+                    <!-- Bidang SMP -->
                     <button onclick="createTicket('SMP')" class="bg-gradient-to-b from-purple-800 to-purple-950 border border-purple-700/50 hover:border-purple-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-purple-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-purple-900/60 flex items-center justify-center text-purple-400 text-lg font-bold group-hover:scale-110 transition-transform">M</div>
                         <div class="mt-3">
@@ -181,6 +177,7 @@
                         </div>
                     </button>
  
+                    <!-- Bidang GTK -->
                     <button onclick="createTicket('GTK')" class="bg-gradient-to-b from-amber-800 to-amber-950 border border-amber-700/50 hover:border-amber-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-amber-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-amber-900/60 flex items-center justify-center text-amber-400 text-lg font-bold group-hover:scale-110 transition-transform">G</div>
                         <div class="mt-3">
@@ -189,6 +186,7 @@
                         </div>
                     </button>
  
+                    <!-- Bidang PORA -->
                     <button onclick="createTicket('PORA')" class="bg-gradient-to-b from-cyan-800 to-cyan-950 border border-cyan-700/50 hover:border-cyan-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-cyan-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-cyan-900/60 flex items-center justify-center text-cyan-400 text-lg font-bold group-hover:scale-110 transition-transform">O</div>
                         <div class="mt-3">
@@ -197,6 +195,7 @@
                         </div>
                     </button>
  
+                    <!-- SEKRETARIAT -->
                     <button onclick="createTicket('SEKRETARIAT')" class="bg-gradient-to-b from-rose-800 to-rose-950 border border-rose-700/50 hover:border-rose-400 rounded-2xl p-5 flex flex-col items-center justify-between text-center min-h-[140px] shadow-lg hover:shadow-rose-950/50 hover:-translate-y-1 transition-all duration-300 group">
                         <div class="w-10 h-10 rounded-full bg-rose-900/60 flex items-center justify-center text-rose-400 text-lg font-bold group-hover:scale-110 transition-transform">T</div>
                         <div class="mt-3">
@@ -208,7 +207,9 @@
             </div>
         </div>
  
+        <!-- 3. TV MONITOR DISPLAY SCREEN -->
         <div id="view-tv" class="hidden flex-grow flex flex-col bg-slate-950 text-white select-none">
+            <!-- TV Header -->
             <div class="bg-slate-900 border-b border-amber-500 px-6 py-4 flex justify-between items-center shadow-md">
                 <div class="flex items-center space-x-4">
                     <svg class="w-14 h-14 text-yellow-400 drop-shadow" viewBox="0 0 100 100" fill="currentColor">
@@ -222,6 +223,7 @@
                     </div>
                 </div>
  
+                <!-- TV Audio Control & Clock -->
                 <div class="flex items-center gap-6">
                     <div id="tv-audio-notif" class="hidden bg-rose-950 border border-rose-800 rounded-xl px-4 py-2 flex items-center gap-3 cursor-pointer animate-pulse" onclick="enableAudioContext()">
                         <i class="fa-solid fa-volume-xmark text-rose-400"></i>
@@ -238,7 +240,9 @@
                 </div>
             </div>
  
+            <!-- TV Main Content Body -->
             <div class="flex-grow grid grid-cols-12 gap-6 p-6">
+                <!-- Left Screen: Current Large Caller -->
                 <div class="col-span-12 lg:col-span-7 flex flex-col">
                     <div id="tv-calling-card" class="flex-grow bg-slate-900 border border-slate-800 rounded-3xl p-8 flex flex-col justify-between shadow-2xl relative overflow-hidden transition-all duration-300">
                         <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/5 to-transparent pointer-events-none"></div>
@@ -266,11 +270,13 @@
                     </div>
                 </div>
  
+                <!-- Right Screen: Loket State Grid -->
                 <div class="col-span-12 lg:col-span-5 flex flex-col gap-4 bg-slate-900/40 border border-slate-800/80 p-6 rounded-3xl shadow-xl">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-list-ol text-amber-500"></i> STATUS SETIAP LOKET
                     </h3>
                     <div class="flex-grow grid grid-cols-1 gap-3 overflow-y-auto">
+                        <!-- Loket 1 -->
                         <div id="tv-loket-box-1" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 1</h4>
@@ -278,6 +284,7 @@
                             </div>
                             <span id="tv-loket-num-1" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
+                        <!-- Loket 2 -->
                         <div id="tv-loket-box-2" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 2</h4>
@@ -285,6 +292,7 @@
                             </div>
                             <span id="tv-loket-num-2" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
+                        <!-- Loket 3 -->
                         <div id="tv-loket-box-3" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 3</h4>
@@ -292,6 +300,7 @@
                             </div>
                             <span id="tv-loket-num-3" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
+                        <!-- Loket 4 -->
                         <div id="tv-loket-box-4" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 4</h4>
@@ -299,6 +308,7 @@
                             </div>
                             <span id="tv-loket-num-4" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
+                        <!-- Loket 5 -->
                         <div id="tv-loket-box-5" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 5</h4>
@@ -306,6 +316,7 @@
                             </div>
                             <span id="tv-loket-num-5" class="text-2xl font-black text-amber-400 font-mono">--</span>
                         </div>
+                        <!-- Loket 6 -->
                         <div id="tv-loket-box-6" class="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-3 flex justify-between items-center shadow transition-all duration-300">
                             <div>
                                 <h4 class="font-extrabold text-slate-300 text-xs uppercase">LOKET 6</h4>
@@ -317,6 +328,7 @@
                 </div>
             </div>
  
+            <!-- TV Announcement Ticker -->
             <div class="bg-amber-500 text-slate-950 font-bold py-3 text-sm overflow-hidden flex items-center border-t border-amber-600 shadow-xl">
                 <div class="whitespace-nowrap flex animate-[marquee_25s_linear_infinite] gap-10">
                     <span>Selamat Datang di Dinas Pendidikan Pemuda dan Olahraga Kabupaten Cianjur • Pelayanan Prima, Efisien, Transparan, dan Adil.</span>
@@ -332,7 +344,9 @@
             </style>
         </div>
  
+        <!-- 4. LOKET OPERATOR CALLER SCREEN -->
         <div id="view-operator" class="hidden flex-grow container mx-auto px-4 py-8 max-w-5xl">
+            <!-- Operator Login Panel -->
             <div id="operator-login-panel" class="max-w-md mx-auto bg-white rounded-3xl shadow-xl border border-slate-100 p-8 mt-10">
                 <div class="text-center mb-6">
                     <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-3xl mx-auto mb-3 shadow-sm">
@@ -365,7 +379,9 @@
                 </div>
             </div>
  
+            <!-- Operator Control Panel (Active Session) -->
             <div id="operator-active-panel" class="hidden grid grid-cols-12 gap-6">
+                <!-- Status Header Row -->
                 <div class="col-span-12 bg-slate-900 text-white rounded-3xl p-6 flex flex-wrap justify-between items-center shadow-xl">
                     <div>
                         <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Sesi Loket Aktif</span>
@@ -379,6 +395,7 @@
                     </div>
                 </div>
  
+                <!-- Main Console Call Buttons -->
                 <div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
                     <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-lg flex-grow flex flex-col justify-between min-h-[340px] relative overflow-hidden">
                         <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
@@ -394,6 +411,7 @@
                             </div>
                         </div>
  
+                        <!-- Panel Buttons -->
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
                             <button onclick="operatorAction('NEXT')" class="col-span-2 md:col-span-2 bg-emerald-600 hover:bg-emerald-700 text-white p-5 rounded-2xl flex flex-col items-center justify-center gap-2 transition duration-200 shadow-sm">
                                 <i class="fa-solid fa-forward-step text-xl"></i>
@@ -414,6 +432,7 @@
                     </div>
                 </div>
  
+                <!-- Right Waiting List Pane -->
                 <div class="col-span-12 lg:col-span-4 flex flex-col">
                     <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-lg flex-grow flex flex-col">
                         <h3 class="text-xs font-extrabold text-slate-500 tracking-wider uppercase mb-4 flex items-center justify-between border-b pb-3">
@@ -421,7 +440,8 @@
                             <span id="op-waiting-count" class="bg-rose-100 text-rose-600 font-black text-xs px-2.5 py-0.5 rounded-full">0</span>
                         </h3>
                         <div id="op-waiting-list" class="flex-grow space-y-2 overflow-y-auto max-h-[260px]">
-                            </div>
+                            <!-- List Antrian yang Menunggu -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -429,10 +449,12 @@
  
     </main>
  
+    <!-- FLOATING PRINTER PREVIEW MODAL -->
     <div id="thermal-printer-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-slate-100 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 flex flex-col justify-between">
             <h4 class="text-xs font-bold text-slate-600 uppercase tracking-widest text-center mb-4">Mencetak Tiket Antrian...</h4>
           
+            <!-- Simulated Ticket -->
             <div id="print-receipt-ticket" class="bg-white p-5 shadow-inner border border-dashed border-slate-300 font-mono text-xs text-slate-900 mx-auto w-full max-w-[58mm] leading-relaxed">
                 <div class="text-center font-bold text-[10px] border-b border-dashed border-slate-300 pb-3 mb-3 uppercase">
                     DINAS PENDIDIKAN PEMUDA<br>DAN OLAHRAGA<br>KABUPATEN CIANJUR
@@ -461,6 +483,7 @@
                 </div>
             </div>
  
+            <!-- Modal Action Buttons -->
             <div class="grid grid-cols-2 gap-3 mt-6">
                 <button onclick="document.getElementById('thermal-printer-modal').classList.add('hidden')" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold py-2 px-4 rounded-xl text-xs transition">Tutup</button>
                 <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-550 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
@@ -470,6 +493,7 @@
         </div>
     </div>
  
+    <!-- CUSTOM ALERT DIALOG MODAL -->
     <div id="custom-alert-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
             <h3 id="alert-title" class="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2">Pemberitahuan</h3>
@@ -480,6 +504,7 @@
         </div>
     </div>
  
+    <!-- SCRIPTS CORE SYSTEM LOGICS -->
     <script>
         // BROADCAST CHANNEL (Sinkronisasi Antar-Tab Lokal Instan)
         const channel = new BroadcastChannel('disdikpora_queue_system');
@@ -509,10 +534,6 @@
         const isSheetsMode = true;
         let lastAnnouncedTickets = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
         let syncIntervalId = null; // ID Interval sinkronisasi global
-        
-        // Sinyal Kendali untuk Mencegah Race Condition (Tabrakan Sinkronisasi)
-        let isSyncing = false;
-        let isSaving = false;
  
         // CEK APAKAH APLIKASI DI SANDBOX PREVIEW
         function checkIsSandbox() {
@@ -522,16 +543,22 @@
                    window.self !== window.top;
         }
  
-        // INITIALIZE DATABASE & REALTIME SCHEDULER
         async function initDatabase() {
             const todayStr = getTodayString();
-            state.lastResetDate = todayStr;
             updateSyncStatusUI();
  
             if (isSheetsMode && sheetsUrl) {
                 await fetchFromSheets();
             }
-            saveStateToStorage(false);
+
+            // DETEKSI OTOMATIS: Jika tanggal terakhir di DB berbeda dengan hari ini, lakukan reset harian
+            if (state.lastResetDate !== todayStr) {
+                resetDailyCounters();
+                await saveStateToStorage(true); // Paksa sinkronisasi reset harian ke Google Sheets
+            } else {
+                saveStateToStorage(false);
+            }
+
             setupSyncInterval(); // Atur detak interval berdasarkan View aktif saat ini
         }
  
@@ -549,12 +576,8 @@
  
         // AMBIL DATA DARI CLOUD (GET)
         async function fetchFromSheets() {
-            // JIKA sedang sinkronisasi atau sedang menyimpan data, batalkan fetch agar tidak bentrok!
-            if (!isSheetsMode || !sheetsUrl || isSyncing || isSaving) return;
-            
-            isSyncing = true; // Nyalakan lampu merah (proses sinkronisasi dimulai)
+            if (!isSheetsMode || !sheetsUrl) return;
             const isSandbox = checkIsSandbox();
-            
             try {
                 const urlWithCacheBuster = `${sheetsUrl}?action=getState&_cb=${Date.now()}`;
                 const response = await fetch(urlWithCacheBuster);
@@ -562,26 +585,18 @@
                 const data = await response.json();
  
                 if (data && data.queues) {
-                    // Amankan sesi login operator lokal agar tidak hilang terhapus data cloud
+                    // Amankan sesi operator lokal dari penimpaan sinkronisasi cloud
                     const localSession = state.operatorSession;
-                    const todayStr = getTodayString();
                     
-                    // Validasi tanggal harian dari server
-                    if (data.lastResetDate && data.lastResetDate !== todayStr) {
-                        state.dailyCounter = { P: 1, S: 1, M: 1, G: 1, O: 1, T: 1 };
-                        state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
-                        state.queues = [];
-                        state.lastResetDate = todayStr;
-                    } else {
-                        state.dailyCounter = data.dailyCounter || state.dailyCounter;
-                        state.activeCalls = data.activeCalls || state.activeCalls;
-                        state.lastResetDate = data.lastResetDate || state.lastResetDate;
-                        state.queues = data.queues || [];
-                    }
+                    // Filter antrean lokal yang berstatus MENUNGGU/DIPANGGIL agar sinkron dengan database aktif
+                    state.dailyCounter = data.dailyCounter || state.dailyCounter;
+                    state.activeCalls = data.activeCalls || state.activeCalls;
+                    state.lastResetDate = data.lastResetDate || state.lastResetDate;
+                    state.queues = data.queues || [];
                     
                     state.operatorSession = localSession;
  
-                    // Mode TV: Deteksi Panggilan Suara
+                    // Jika di mode TV, deteksi panggilan baru untuk trigger suara otomatis
                     if (state.currentView === 'tv') {
                         for (let i = 1; i <= 6; i++) {
                             const activeVal = state.activeCalls[i];
@@ -598,19 +613,17 @@
                     refreshActiveViewUI();
                 }
             } catch (e) {
-                if (!isSandbox) console.error("Gagal sinkronisasi dari Google Sheets:", e);
+                if (!isSandbox) {
+                    console.error("Gagal sinkronisasi dari Google Sheets:", e);
+                }
                 setDatabaseConnectedStatus(false, e.toString());
-            } finally {
-                isSyncing = false; // Matikan lampu merah (selesai, sistem siap kembali)
             }
         }
  
         // KIRIM DATA KE GOOGLE SHEETS CLOUD (POST)
         async function saveStateToStorage(pushToSheets = true) {
             channel.postMessage({ type: 'STATE_UPDATED', state: state });
-            
             if (isSheetsMode && sheetsUrl && pushToSheets) {
-                isSaving = true; // Nyalakan lampu merah: Kunci sinkronisasi otomatis!
                 const isSandbox = checkIsSandbox();
                 try {
                     const stateToSend = JSON.parse(JSON.stringify(state));
@@ -626,11 +639,6 @@
                     if (!isSandbox) {
                         console.error("Gagal menyimpan data ke Cloud:", e);
                     }
-                } finally {
-                    // Beri jeda 800 milidetik agar Google Sheets selesai menulis data sebelum kunci dibuka
-                    setTimeout(() => { 
-                        isSaving = false; // Matikan lampu merah: Buka kunci sinkronisasi kembali
-                    }, 800);
                 }
             }
         }
@@ -655,9 +663,12 @@
             }
         }
  
-        if (!isSheetsMode && badge) {
-            badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode Offline`;
-            badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
+        function updateSyncStatusUI() {
+            const badge = document.getElementById('sync-status-badge');
+            if (!isSheetsMode && badge) {
+                badge.innerHTML = `<span class="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping"></span> Mode Offline`;
+                badge.className = "text-xs bg-slate-800 px-3 py-1.5 rounded-full text-slate-300 font-medium border border-slate-700 flex items-center gap-1.5";
+            }
         }
  
         function refreshActiveViewUI() {
@@ -704,34 +715,12 @@
             }
         }
  
-        // PENDAFTARAN TIKET BARU (KIOS MANDIRI - ANTI DUPLIKAT)
-        async function createTicket(bidangName) {
+        // PENDAFTARAN TIKET BARU (KIOS MANDIRI)
+        function createTicket(bidangName) {
             const config = BIDANG_MAPPING[bidangName];
             if (!config) return;
  
-            // Kunci tombol sementara agar tidak diklik dua kali berturut-turut saat loading
-            if (isSaving) return; 
-            isSaving = true;
- 
-            // Tarik data counter paling update dari server Google Sheets secara instan sebelum alokasi nomor
-            if (isSheetsMode && sheetsUrl) {
-                try {
-                    const urlWithCacheBuster = `${sheetsUrl}?action=getState&_cb=${Date.now()}`;
-                    const response = await fetch(urlWithCacheBuster);
-                    if (response.ok) {
-                        const data = await response.json();
-                        const todayStr = getTodayString();
-                        
-                        if (data && data.lastResetDate === todayStr) {
-                            state.dailyCounter = data.dailyCounter || state.dailyCounter;
-                            state.queues = data.queues || [];
-                        }
-                    }
-                } catch (e) {
-                    console.warn("Gagal sinkronisasi counter real-time, menggunakan counter lokal.", e);
-                }
-            }
- 
+            // Ambil nomor urut berikutnya dari dailyCounter lokal
             const nextNum = state.dailyCounter[config.prefix];
             state.dailyCounter[config.prefix]++;
  
@@ -753,47 +742,19 @@
             };
  
             state.queues.push(newQueue);
+            saveStateToStorage();
  
-            // Render langsung ke Struk Thermal Printer Modal
+            // Render ke Struk Thermal Printer
             document.getElementById('ticket-field-out').innerText = config.name;
             document.getElementById('ticket-number-out').innerText = formattedNum;
             document.getElementById('ticket-date-out').innerText = dateStr;
             document.getElementById('ticket-time-out').innerText = timeStr;
+ 
             document.getElementById('thermal-printer-modal').classList.remove('hidden');
- 
-            // Broadcast ke tab lokal dan dorong ke Google Sheets cloud
-            channel.postMessage({ type: 'STATE_UPDATED', state: state });
-            if (isSheetsMode && sheetsUrl) {
-                try {
-                    const stateToSend = JSON.parse(JSON.stringify(state));
-                    delete stateToSend.operatorSession;
- 
-                    await fetch(sheetsUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify({ action: 'saveState', state: stateToSend })
-                    });
-                } catch (e) {
-                    console.error("Gagal mengirim tiket baru ke cloud:", e);
-                } finally {
-                    setTimeout(() => { isSaving = false; }, 500);
-                }
-            } else {
-                isSaving = false;
-            }
         }
  
-        // RENDERING KONSOL OPERATOR LOKET (ANTI-TERTIMPA CLOUD)
+        // RENDERING KONSOL OPERATOR LOKET
         function renderOperatorConsole() {
-            // Ambil cadangan sesi dari browser jika memori utama kosong
-            if (!state.operatorSession) {
-                const savedSession = localStorage.getItem('disdikpora_op_session');
-                if (savedSession) {
-                    state.operatorSession = JSON.parse(savedSession);
-                }
-            }
-
             if (!state.operatorSession) {
                 document.getElementById('operator-login-panel').classList.remove('hidden');
                 document.getElementById('operator-active-panel').classList.add('hidden');
@@ -827,9 +788,8 @@
                 document.getElementById('op-current-time').innerText = `Jam Ambil: --`;
             }
  
-            // Ambil daftar antrian dengan status MENUNGGU hari ini yang sesuai dengan Bidang Loket
-            const todayStr = getTodayString();
-            const waitingList = state.queues.filter(q => q.bidang === bidangName && q.status === 'MENUNGGU' && q.tanggal === todayStr)
+            // Filter daftar antrian yang menunggu khusus di bidang tugas loket ini
+            const waitingList = state.queues.filter(q => q.bidang === bidangName && q.status === 'MENUNGGU')
                 .sort((a,b) => a.id - b.id);
           
             document.getElementById('op-waiting-count').innerText = waitingList.length;
@@ -865,17 +825,12 @@
             const pin = document.getElementById('operator-pin').value;
  
             if (pin === '123456') {
-                const sessionData = {
+                state.operatorSession = {
                     loket: parseInt(selectLoket),
                     loggedInTime: new Date().toLocaleTimeString()
                 };
-                
-                // Kunci ke state dan memori lokal browser agar permanen di tab ini
-                state.operatorSession = sessionData;
-                localStorage.setItem('disdikpora_op_session', JSON.stringify(sessionData));
-                
                 document.getElementById('operator-login-error').classList.add('hidden');
-                saveStateToStorage(true);
+                saveStateToStorage();
                 renderOperatorConsole();
             } else {
                 document.getElementById('operator-login-error').classList.remove('hidden');
@@ -884,20 +839,17 @@
  
         function logoutOperator() {
             state.operatorSession = null;
-            localStorage.removeItem('disdikpora_op_session'); // Hapus dari memori browser
-            saveStateToStorage(true);
+            saveStateToStorage();
             renderOperatorConsole();
         }
  
-        // CORE WORKFLOW ANTRIAN - OPERATOR (STABIL & SEKALI KLIK BERJALAN)
-        async function operatorAction(actionType) {
+        // CORE WORKFLOW ANTRIAN - OPERATOR
+        function operatorAction(actionType) {
             if (!state.operatorSession) {
                 showAlert('Peringatan', 'Sesi operator tidak aktif. Silakan masuk kembali.');
                 goToView('operator');
                 return;
             }
- 
-            if (isSaving) return; // Lindungi jika proses pengiriman data sebelumnya belum tuntas
  
             const loketId = state.operatorSession.loket;
             const bidangName = getBidangByLoket(loketId);
@@ -927,25 +879,20 @@
                 nextQueue.loket = loketId;
                 nextQueue.jam_panggil = nowTimeStr;
                 state.activeCalls[loketId] = nextQueue.code_antrian;
-                
-                refreshActiveViewUI();
-                await saveStateToStorage(true);
+ 
+                saveStateToStorage();
+                renderOperatorConsole();
  
             } else if (actionType === 'RECALL') {
-                const currentActiveNum = state.activeCalls[loketId];
-                if (!currentActiveNum) {
+                if (!activeRecord) {
                     showAlert('Perhatian', 'Tidak ada nomor antrian aktif untuk dipanggil ulang.');
                     return;
                 }
- 
-                const currentTicket = state.queues.find(q => q.code_antrian === currentActiveNum);
-                if (currentTicket) {
-                    currentTicket.status = 'DIPANGGIL';
-                }
-                
-                lastAnnouncedTickets[loketId] = null; // Reset cache agar TV otomatis bicara ulang
-                refreshActiveViewUI();
-                await saveStateToStorage(true);
+                activeRecord.status = 'DIPANGGIL';
+                // Reset cache agar layar TV Monitor mau membunyikan ulang
+                lastAnnouncedTickets[loketId] = null;
+                saveStateToStorage();
+                renderOperatorConsole();
  
             } else if (actionType === 'SKIP') {
                 if (!activeRecord) {
@@ -956,44 +903,20 @@
                 activeRecord.jam_selesai = nowTimeStr;
                 state.activeCalls[loketId] = null;
  
-                refreshActiveViewUI();
-                await saveStateToStorage(true);
+                saveStateToStorage();
+                renderOperatorConsole();
  
             } else if (actionType === 'DONE') {
-                const currentActiveNum = state.activeCalls[loketId];
-                const currentRecord = currentActiveNum ? state.queues.find(q => q.code_antrian === currentActiveNum) : null;
- 
-                if (!currentRecord) {
+                if (!activeRecord) {
                     showAlert('Perhatian', 'Tidak ada antrian aktif untuk disimpan.');
                     return;
                 }
+                activeRecord.status = 'SELESAI';
+                activeRecord.jam_selesai = nowTimeStr;
+                state.activeCalls[loketId] = null;
  
-                isSaving = true; // Kunci sinkronisasi latar belakang
-                currentRecord.status = 'SELESAI';
-                currentRecord.jam_selesai = nowTimeStr;
-                state.activeCalls[loketId] = null; // Kembalikan ke IDLE
- 
-                refreshActiveViewUI(); // Tampilan lokal langsung bersih seketika
- 
-                channel.postMessage({ type: 'STATE_UPDATED', state: state });
-                if (isSheetsMode && sheetsUrl) {
-                    const stateToSend = JSON.parse(JSON.stringify(state));
-                    delete stateToSend.operatorSession;
- 
-                    fetch(sheetsUrl, {
-                        method: 'POST',
-                        mode: 'no-cors',
-                        headers: { 'Content-Type': 'text/plain' },
-                        body: JSON.stringify({ action: 'saveState', state: stateToSend })
-                    }).then(() => {
-                        setTimeout(() => { isSaving = false; }, 500);
-                    }).catch((e) => {
-                        console.error("Gagal menyimpan status selesai ke cloud:", e);
-                        isSaving = false;
-                    });
-                } else {
-                    isSaving = false;
-                }
+                saveStateToStorage();
+                renderOperatorConsole();
             }
         }
  
@@ -1029,6 +952,7 @@
                 document.getElementById('tv-active-destination').innerText = `Silakan menunggu antrian dipanggil`;
             }
  
+            // Update Mini Box Status untuk setiap Loket (1-6)
             for (let i = 1; i <= 6; i++) {
                 const activeVal = state.activeCalls[i];
                 const boxEl = document.getElementById(`tv-loket-box-${i}`);
@@ -1045,6 +969,7 @@
             }
         }
  
+        // PEMUTARAN AUDIO BEL & SUARA ROBOT (SINTESIS RAMAH WANITA INDONESIA)
         function triggerVoiceCall(ticketCode, loketNumber, bidangName) {
             const ring = document.getElementById('tv-pulse-glow');
             if (ring) {
@@ -1052,6 +977,7 @@
                 setTimeout(() => ring.classList.add('hidden'), 8000);
             }
  
+            // Mainkan Nada Chime sebelum Memanggil Nomor
             playCounterChime().then(() => {
                 setTimeout(() => {
                     speakQueueVoice(ticketCode, loketNumber, bidangName);
@@ -1059,6 +985,7 @@
             });
         }
  
+        // GENERATOR NADA CHIME KHAS PELAYANAN
         function playCounterChime() {
             return new Promise((resolve) => {
                 try {
@@ -1067,6 +994,7 @@
                         audioCtx.resume();
                     }
  
+                    // Nada Tinggi kesatu (C5)
                     const osc1 = audioCtx.createOscillator();
                     const gain1 = audioCtx.createGain();
                     osc1.type = 'sine';
@@ -1078,6 +1006,7 @@
                     osc1.start();
                     osc1.stop(audioCtx.currentTime + 0.5);
  
+                    // Nada Rendah kedua (G4)
                     setTimeout(() => {
                         const osc2 = audioCtx.createOscillator();
                         const gain2 = audioCtx.createGain();
@@ -1099,63 +1028,54 @@
             });
         }
  
-// SINTESIS PENGUCAPAN AUDIO (RAMAH, ANGGUN & ALAMI KHAS CUSTOMER SERVICE)
+        // SINTESIS PENGUCAPAN AUDIO "LEMBUT DAN MANDIRI"
         function speakQueueVoice(ticketCode, loketNumber, bidangName) {
             if (!('speechSynthesis' in window)) return;
-
-            // Batalkan semua antrean suara usang agar tidak tumpang tindih
+ 
+            // Batalkan semua antrean suara usang yang menumpuk
             window.speechSynthesis.cancel();
-
+ 
             const letter = ticketCode.charAt(0);
-            // Ambil angka setelah huruf dan ubah jadi bilangan bulat (misal: "001" jadi 1, "015" jadi 15)
-            const numberValue = parseInt(ticketCode.substring(1), 10); 
-
-            // Nama penyebutan kode huruf yang diperjelas intonasinya
-            const letterNames = {
-                'P': 'P', 'S': 'S', 'M': 'M', 'G': 'G', 'O': 'O', 'T': 'T'
+            const digits = ticketCode.substring(1).split('');
+ 
+            // Penyebutan Huruf yang lebih anggun & lembut
+            const letterSpelling = {
+                'P': 'Pe.', 'S': 'Es.', 'M': 'Em.', 'G': 'Ge.', 'O': 'O.', 'T': 'Te.'
             };
-            const spokenLetter = letterNames[letter] || letter;
-
-            // Konversi nomor loket ke teks terbilang Indonesia
+ 
+            // Membaca Angka secara terpisah agar terdengar jelas dan tenang
+            const digitSpelling = {
+                '0': 'kosong', '1': 'satu', '2': 'dua', '3': 'tiga', '4': 'empat',
+                '5': 'lima', '6': 'enam', '7': 'tujuh', '8': 'delapan', '9': 'sembilan'
+            };
+ 
+            const speltLetter = letterSpelling[letter] || letter;
+            const speltDigits = digits.map(d => digitSpelling[d] || d).join('... ');
+ 
             const counterWords = {
-                1: 'Satu', 2: 'Dua', 3: 'Tiga', 4: 'Empat', 5: 'Lima', 6: 'Enam'
+                1: 'satu', 2: 'dua', 3: 'tiga', 4: 'empat', 5: 'lima', 6: 'enam'
             };
-            const spokenLoket = counterWords[loketNumber] || loketNumber;
-
-            // Pembersihan nama bidang agar saat diucapkan mengalir enak didengar
-            let formattedBidang = bidangName;
-            if (bidangName.toLowerCase() === 'sekretariat') {
-                formattedBidang = 'Bagian Sekretariat';
-            } else {
-                formattedBidang = 'Bidang ' + bidangName;
-            }
-
-            // [STRUKTUR KALIMAT ALAMI] Menggunakan koma (,) untuk jeda napas yang pas dan sopan
-            const textToSpeak = `Nomor antrean, ${spokenLetter}, ${numberValue}. Silakan menuju, ke Loket ${spokenLoket}, di ${formattedBidang}. Terima kasih.`;
-
+            const speltLoket = counterWords[loketNumber] || loketNumber;
+ 
+            // Struktur Kalimat panggilan sopan, elegan & interaktif
+            const textToSpeak = `Nomor antrean... ${speltLetter}... ${speltDigits}... silakan menuju ke loket ${speltLoket}... bidang ${bidangName}. Terima kasih.`;
+ 
             const utterance = new SpeechSynthesisUtterance(textToSpeak);
             utterance.lang = 'id-ID';
-            
-            // PARAMETER KUNCI SUARA WANITA LEMBUT:
-            utterance.rate = 0.83;   // Sedikit diperlambat dari normal agar berwibawa dan anggun
-            utterance.pitch = 1.15;  // Nada dinaikkan sedikit agar terdengar ramah, ceria, dan feminin
-
-            // Cari database suara bawaan sistem perangkat
+            utterance.rate = 0.78;  // Diatur tenang & anggun agar suara terdengar santai
+            utterance.pitch = 1.1;   // Pitch sedikit dinaikkan agar terdengar lebih ramah & feminin
+ 
             const voices = window.speechSynthesis.getVoices();
-            
-            // Cari engine suara wanita Indonesia terbaik (Gadis/ID-ID-Natural/Microsoft Denisa)
-            const indonesianVoice = voices.find(v => 
-                (v.lang.startsWith('id') || v.name.includes('Indonesian')) && 
-                (v.name.toLowerCase().includes('gadis') || v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('zira') || v.name.toLowerCase().includes('google'))
-            ) || voices.find(v => v.lang.startsWith('id')); // Fallback ke bahasa Indonesia apa saja jika tidak ketemu yang spesifik perempuan
-
+            // Prioritaskan suara perempuan beraksen Indonesia
+            const indonesianVoice = voices.find(v => v.lang.startsWith('id') || v.name.includes('Indonesian') || v.name.includes('Gadis') || v.name.includes('Andika'));
             if (indonesianVoice) {
                 utterance.voice = indonesianVoice;
             }
-
+ 
             window.speechSynthesis.speak(utterance);
         }
-        
+ 
+        // MANAJEMEN BLOKIR AUDIO AUTO-PLAY OLEH BROWSER
         function checkAudioPermission() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1177,13 +1097,14 @@
                 audioCtx.resume().then(() => {
                     document.getElementById('tv-audio-notif').classList.add('hidden');
                     document.getElementById('tv-audio-active-badge').classList.remove('hidden');
-                    playCounterChime();
+                    playCounterChime(); // Bunyikan bel tes tanda berhasil aktif
                 });
             } catch (e) {
                 console.error(e);
             }
         }
  
+        // SYSTEM UTILITIES
         function getTodayString() {
             const d = new Date();
             const year = d.getFullYear();
@@ -1199,6 +1120,16 @@
             return null;
         }
  
+        function resetDailyCounters() {
+            // Reset counter harian ke angka 1 agar tiket pertama hari ini bernilai 001
+            state.dailyCounter = { P: 1, S: 1, M: 1, G: 1, O: 1, T: 1 };
+            state.activeCalls = { 1: null, 2: null, 3: null, 4: null, 5: null, 6: null };
+            
+            // Kosongkan antrean aktif hari kemarin dari RAM (karena sudah diarsipkan permanen di EVALUATION_HISTORY)
+            state.queues = []; 
+            state.lastResetDate = getTodayString();
+        }
+ 
         function showAlert(title, text) {
             const modal = document.getElementById('custom-alert-modal');
             document.getElementById('alert-title').innerText = title;
@@ -1206,6 +1137,7 @@
             modal.classList.remove('hidden');
         }
  
+        // LOAD UTAMA SAAT WINDOW SELESAI RENDERING
         window.onload = function() {
             initDatabase();
             const urlParams = new URLSearchParams(window.location.search);
@@ -1218,6 +1150,7 @@
             }
         };
  
+        // Mengisi Voice List dari browser di awal
         if ('speechSynthesis' in window) {
             window.speechSynthesis.getVoices();
             window.speechSynthesis.onvoiceschanged = function() {
