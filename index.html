@@ -784,8 +784,16 @@
             }
         }
  
-        // RENDERING KONSOL OPERATOR LOKET
+        // RENDERING KONSOL OPERATOR LOKET (ANTI-TERTIMPA CLOUD)
         function renderOperatorConsole() {
+            // Ambil cadangan sesi dari browser jika memori utama kosong
+            if (!state.operatorSession) {
+                const savedSession = localStorage.getItem('disdikpora_op_session');
+                if (savedSession) {
+                    state.operatorSession = JSON.parse(savedSession);
+                }
+            }
+
             if (!state.operatorSession) {
                 document.getElementById('operator-login-panel').classList.remove('hidden');
                 document.getElementById('operator-active-panel').classList.add('hidden');
@@ -819,7 +827,9 @@
                 document.getElementById('op-current-time').innerText = `Jam Ambil: --`;
             }
  
-            const waitingList = state.queues.filter(q => q.bidang === bidangName && q.status === 'MENUNGGU')
+            // Ambil daftar antrian dengan status MENUNGGU hari ini yang sesuai dengan Bidang Loket
+            const todayStr = getTodayString();
+            const waitingList = state.queues.filter(q => q.bidang === bidangName && q.status === 'MENUNGGU' && q.tanggal === todayStr)
                 .sort((a,b) => a.id - b.id);
           
             document.getElementById('op-waiting-count').innerText = waitingList.length;
@@ -855,12 +865,17 @@
             const pin = document.getElementById('operator-pin').value;
  
             if (pin === '123456') {
-                state.operatorSession = {
+                const sessionData = {
                     loket: parseInt(selectLoket),
                     loggedInTime: new Date().toLocaleTimeString()
                 };
+                
+                // Kunci ke state dan memori lokal browser agar permanen di tab ini
+                state.operatorSession = sessionData;
+                localStorage.setItem('disdikpora_op_session', JSON.stringify(sessionData));
+                
                 document.getElementById('operator-login-error').classList.add('hidden');
-                saveStateToStorage();
+                saveStateToStorage(true);
                 renderOperatorConsole();
             } else {
                 document.getElementById('operator-login-error').classList.remove('hidden');
@@ -869,7 +884,8 @@
  
         function logoutOperator() {
             state.operatorSession = null;
-            saveStateToStorage();
+            localStorage.removeItem('disdikpora_op_session'); // Hapus dari memori browser
+            saveStateToStorage(true);
             renderOperatorConsole();
         }
  
