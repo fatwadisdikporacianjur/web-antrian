@@ -14,37 +14,56 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
             /* Printing Layout Optimization */
+            /* Perbaikan Layout Cetak Printer Thermal 58mm */
             @media print {
-                /* Sembunyikan seluruh elemen di body secara mutlak */
-                body * {
-                    display: none !important;
-                    visibility: hidden !important;
-                }
-                
-                /* Hanya tampilkan struk cetak dan paksa posisinya */
-                #print-receipt-ticket, #print-receipt-ticket * {
-                    display: block !important;
-                    visibility: visible !important;
-                }
-                
-                #print-receipt-ticket {
-                    position: absolute;
-                    left: 0;
-                    top: 0;
-                    width: 100%;
-                    max-width: 58mm; /* Sesuaikan dengan lebar kertas Anda (58mm / 80mm) */
-                    padding: 0;
+                /* Atur ukuran kertas spesifik printer thermal */
+                @page {
+                    size: 58mm auto;
                     margin: 0;
+                }
+                
+                /* Sembunyikan seluruh isi web secara total agar tidak memakan space */
+                body {
                     background: white;
                     color: black;
-                    font-family: monospace;
-                    font-size: 10px;
+                    padding: 0;
+                    margin: 0;
+                }
+                
+                body > *:not(#thermal-printer-modal) {
+                    display: none !important;
+                }
+                
+                #view-launcher, #view-kiosk, #view-tv, #view-operator, header, footer {
+                    display: none !important;
                 }
             
-                /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, halaman) */
-                @page {
-                    size: auto;
-                    margin: 0mm;
+                /* Tampilkan modal printer dan struk secara presisi */
+                #thermal-printer-modal {
+                    position: static !important;
+                    display: block !important;
+                    background: transparent !important;
+                    backdrop-filter: none !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                }
+            
+                /* Tombol cetak di dalam modal harus disembunyikan saat kertas keluar */
+                #thermal-printer-modal button, 
+                #thermal-printer-modal h4 {
+                    display: none !important;
+                }
+            
+                #print-receipt-ticket {
+                    display: block !important;
+                    width: 100% !important;
+                    max-width: 58mm !important;
+                    padding: 4mm !important;
+                    margin: 0 auto !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    font-family: monospace;
+                    page-break-inside: avoid;
                 }
             }
         }
