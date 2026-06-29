@@ -13,25 +13,39 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        /* Printing Layout Optimization */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #print-receipt-ticket, #print-receipt-ticket * {
-                visibility: visible;
-            }
-            #print-receipt-ticket {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                max-width: 58mm;
-                padding: 10px;
-                margin: 0;
-                background: white;
-                color: black;
-                font-family: monospace;
+            /* Printing Layout Optimization */
+            @media print {
+                /* Sembunyikan seluruh elemen di body secara mutlak */
+                body * {
+                    display: none !important;
+                    visibility: hidden !important;
+                }
+                
+                /* Hanya tampilkan struk cetak dan paksa posisinya */
+                #print-receipt-ticket, #print-receipt-ticket * {
+                    display: block !important;
+                    visibility: visible !important;
+                }
+                
+                #print-receipt-ticket {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    max-width: 58mm; /* Sesuaikan dengan lebar kertas Anda (58mm / 80mm) */
+                    padding: 0;
+                    margin: 0;
+                    background: white;
+                    color: black;
+                    font-family: monospace;
+                    font-size: 10px;
+                }
+            
+                /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, halaman) */
+                @page {
+                    size: auto;
+                    margin: 0mm;
+                }
             }
         }
     </style>
@@ -487,6 +501,8 @@
             <div class="grid grid-cols-2 gap-3 mt-6">
                 <button onclick="document.getElementById('thermal-printer-modal').classList.add('hidden')" class="bg-slate-300 hover:bg-slate-400 text-slate-800 font-bold py-2 px-4 rounded-xl text-xs transition">Tutup</button>
                 <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-550 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
+                    <i class="fa-solid fa-print"></i> Cetak Tiket
+                <button onclick="window.print(); document.getElementById('thermal-printer-modal').classList.add('hidden');" class="bg-emerald-600 hover:bg-emerald-550 text-white font-bold py-2 px-4 rounded-xl text-xs transition flex items-center justify-center gap-1.5 shadow">
                     <i class="fa-solid fa-print"></i> Cetak Tiket
                 </button>
             </div>
